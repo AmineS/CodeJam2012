@@ -103,6 +103,18 @@ public class SMAStrategy extends AStrategy implements Runnable
     {
         return fastSMAValues;
     }
+    
+    public void test(){
+        double[] ps = {61.590, 61.440, 61.320, 61.670, 61.920, 62.610, 62.880, 63.060, 63.290, 63.320, 63.260, 63.120, 62.240, 62.190, 62.890};
+        int tick =0;
+        for(double d : ps){
+            price.SetPrice(tick++, (float) d);
+            runStrategy();
+        }
+        for(float p: fastSMAValues){
+            System.out.println(p);
+        }
+    }
 
     private int currentTick;
     private boolean fasterThenSlower;
