@@ -1,5 +1,4 @@
 package trading;
-import java.util.concurrent.locks.Lock;
 
 /**
  * Class for Triangular Moving Strategy (TMA)
@@ -7,9 +6,9 @@ import java.util.concurrent.locks.Lock;
  */
 public class TMAStrategy extends AStrategy implements Runnable
 {
-    /** SMA Values */
-    private float[] SMAValuesSlow = new float[Prices.MAX_SECONDS];
-    private float[] SMAValuesFast = new float[Prices.MAX_SECONDS];
+    /** Float Arrays for SMA Values */
+    private float[] slowSMAValues = new float[Prices.MAX_SECONDS];
+    private float[] fastSMAValues = new float[Prices.MAX_SECONDS];
 
     /** Values of N */
     private final int N_FAST = 5;
@@ -18,32 +17,30 @@ public class TMAStrategy extends AStrategy implements Runnable
     /** the tick we are at */
     private int currentTick = 0;
 
-    /** TMA Values */
-    private float[] TMAValuesSlow = new float[Prices.MAX_SECONDS];
-    private float[] TMAValuesFast = new float[Prices.MAX_SECONDS];
+    /** Float Arrays for TMA Values */
+    private float[] slowTMAValues = new float[Prices.MAX_SECONDS];
+    private float[] fastTMAValues = new float[Prices.MAX_SECONDS];
 
     /** latest TMA Value - used when updating */
     private float latestTMAValueSlow = 0;
     private float latestTMAValueFast = 0;
     
     /** checking whether the faster TMA has a greater value than the slower TMA */
-    private boolean fasterGTSlower = false;
+    private boolean fasterThenSlower;
   
     /** Prices object to get current price */
     private Prices prices = null;
-    private boolean fasterThenSlower;
+    
     /**
      * Constructor
      */
     public TMAStrategy(Prices priceList)
     {
-       SMAValuesSlow = SMAStrategy.getSlow();
-       SMAValuesFast = SMAStrategy.getFast();
        prices = priceList;
        for (int i=0;i<Prices.MAX_SECONDS;i++)
        {
-           TMAValuesSlow[i] = -1;
-           TMAValuesFast[i] = -1;
+           slowTMAValues[i] = -1;
+           fastTMAValues[i] = -1;
        }
     }
     
@@ -52,14 +49,6 @@ public class TMAStrategy extends AStrategy implements Runnable
      */
     public void run()
     {
-        try
-        {
-            Thread.sleep(100);
-        } catch (InterruptedException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         while(currentTick != Prices.MAX_SECONDS)
         {
             runStrategy();
@@ -71,11 +60,15 @@ public class TMAStrategy extends AStrategy implements Runnable
      */
     public void runStrategy()
     {
-        updateSlow(currentTick, N_SLOW);
-        updateFast(currentTick, N_FAST);
+        computeSlowSMA();
+        computeFastSMA();
+        
+        computeSlowTMA(currentTick, N_SLOW);
+        computeFastTMA(currentTick, N_FAST);
+
         if(currentTick > 1)
         {
-            boolean currentFasterThenSlower = SMAValuesFast[currentTick] > SMAValuesSlow[currentTick];
+            boolean currentFasterThenSlower = fastSMAValues[currentTick] > slowSMAValues[currentTick];
             if(currentFasterThenSlower != fasterThenSlower)
             {
                 crossover(fasterThenSlower);
@@ -89,7 +82,7 @@ public class TMAStrategy extends AStrategy implements Runnable
         }
         else
         {
-            fasterThenSlower = SMAValuesFast[currentTick] > SMAValuesSlow[currentTick];
+            fasterThenSlower = fastSMAValues[currentTick] > slowSMAValues[currentTick];
         }
         
         ++currentTick;
@@ -99,69 +92,114 @@ public class TMAStrategy extends AStrategy implements Runnable
      * update TMA(20)
      * @param t
      */
-    public void updateSlow(int t, int n)
+    public void computeSlowTMA(int t, int n)
     {
         if (t<n)
         {
             // calculation similar to LWMA
             if (t==0)
             {
-                TMAValuesSlow[t] = SMAValuesSlow[t];
+                slowTMAValues[t] = slowSMAValues[t];
             }
             else
             {
                 for (int k=0; k<=t; k++)
                 {
-                    TMAValuesSlow[t] += SMAValuesSlow[t];
+                    slowTMAValues[t] += slowSMAValues[t];
                 }
             }
-            TMAValuesSlow[t] /= t+1;
-            latestTMAValueSlow = TMAValuesSlow[t];
+            slowTMAValues[t] /= t+1;
+            latestTMAValueSlow = slowTMAValues[t];
         }
         else
         {
             // TMA's formula
-            latestTMAValueSlow = TMAValuesSlow[t-1];
-            latestTMAValueSlow = latestTMAValueSlow - (SMAValuesSlow[t-n]/n) + (SMAValuesSlow[t]/n);
-            TMAValuesSlow[t] = latestTMAValueSlow;
+            latestTMAValueSlow = slowTMAValues[t-1];
+            latestTMAValueSlow = latestTMAValueSlow - (slowSMAValues[t-n]/n) + (slowSMAValues[t]/n);
+            slowTMAValues[t] = latestTMAValueSlow;
         }
         
         if (t<10)
         {
-            System.out.println("SMA:"+SMAValuesSlow[t]);
-            System.out.println("TMA:"+TMAValuesSlow[t]);
+            System.out.println("SMA:"+slowSMAValues[t]);
+            System.out.println("TMA:"+slowTMAValues[t]);
         }
         
     }
     
     /**
      * update TMA(5)
-     * @param t
+     * @param t - the tick
+     * @param n - N
      */
-    public void updateFast(int t, int n)
+    public void computeFastTMA(int t, int n)
     {
         if (t<n)
         {
             if (t==0)
             {
-                TMAValuesFast[t] = SMAValuesFast[t];
+                fastTMAValues[t] = fastSMAValues[t];
             }
             else
             {
                 for (int k=0; k<=t; k++)
                 {
-                    TMAValuesFast[t] += SMAValuesFast[t];
+                    fastTMAValues[t] += fastSMAValues[t];
                 }
-                TMAValuesFast[t] /= t+1;
+                fastTMAValues[t] /= t+1;
             }
-            latestTMAValueFast = TMAValuesFast[t];
+            latestTMAValueFast = fastTMAValues[t];
         }
         else
         {
             // TMA's formula
-            latestTMAValueFast = TMAValuesFast[t-1];
-            latestTMAValueFast = latestTMAValueFast - (SMAValuesFast[t-n]/n) + (SMAValuesFast[t]/n);
-            TMAValuesFast[t] = latestTMAValueFast;
+            latestTMAValueFast = fastTMAValues[t-1];
+            latestTMAValueFast = latestTMAValueFast - (fastSMAValues[t-n]/n) + (fastSMAValues[t]/n);
+            fastTMAValues[t] = latestTMAValueFast;
+        }
+    }
+    
+    /**
+     * Compute Slow SMA
+     */
+    public void computeSlowSMA()
+    {
+        if (currentTick < N_SLOW)
+        {
+            for (int i = 0; i <= currentTick; i++)
+            {
+                slowSMAValues[currentTick] += prices.GetPrice(i);
+            }
+            if (currentTick > 0)
+            {
+                slowSMAValues[currentTick] /= currentTick + 1;
+            }
+        }
+        else
+        {
+            slowSMAValues[currentTick] = slowSMAValues[currentTick - 1] + (prices.GetPrice(currentTick) - prices.GetPrice(currentTick - N_SLOW)) / N_SLOW;
+        }
+    }
+    
+    /**
+     * Compute Fast SMA
+     */
+    public void computeFastSMA()
+    {
+        if (currentTick < N_FAST)
+        {
+            for (int i = 0; i <= currentTick; i++)
+            {
+                fastSMAValues[currentTick] += prices.GetPrice(i);
+            }
+            if (currentTick != 0)
+            {
+                fastSMAValues[currentTick] /= currentTick + 1;
+            }
+        }
+        else
+        {
+            fastSMAValues[currentTick] = fastSMAValues[currentTick - 1]  + (prices.GetPrice(currentTick) - prices.GetPrice(currentTick - N_FAST)) / N_FAST;
         }
     }
     
