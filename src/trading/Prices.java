@@ -2,7 +2,7 @@ package trading;
 
 public class Prices
 {
-    private int MAX_SECONDS = 32400; 
+    static int MAX_SECONDS = 32400; 
     private float[] prices = new float[MAX_SECONDS];
     
     public static Prices GetPrices()
