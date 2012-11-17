@@ -76,8 +76,9 @@ public class EMAStrategy extends AStrategy {
 				63.060, 63.290, 63.320, 63.260, 63.120, 62.240, 62.190, 62.890 };
 		this.curTick = 0;
 		for (double d : ps) {
-			price.SetPrice(this.curTick++, (float) d);
+			price.SetPrice(this.curTick, (float) d);
 			runStrategy();
+			curTick ++;
 		}
 		for (float p : fast) {
 			System.out.println(p);
