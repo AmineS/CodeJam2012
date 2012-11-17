@@ -25,19 +25,20 @@ public class TMAStrategy extends AStrategy implements Runnable
     private float latestTMAValueSlow = 0;
     private float latestTMAValueFast = 0;
     
-    /** checking whetther the faster TMA has a greater value than the slower TMA */
+    /** checking whether the faster TMA has a greater value than the slower TMA */
     private boolean fasterGTSlower = false;
+  
+    /** Prices object to get current price */
+    private Prices prices = null;
     
- 
     /**
      * Constructor
      */
-    public TMAStrategy()
+    public TMAStrategy(Prices priceList)
     {
        SMAValuesSlow = SMAStrategy.getSlow();
        SMAValuesFast = SMAStrategy.getFast();
-       
-       
+       prices = priceList;
        for (int i=0;i<Prices.MAX_SECONDS;i++)
        {
            TMAValuesSlow[i] = -1;
@@ -154,14 +155,6 @@ public class TMAStrategy extends AStrategy implements Runnable
     }
 
     /**
-     * 
-     */
-    public void write(int tick, char type, float price, int strategy)
-    {
-        // TODO Auto-generated method stub
-    }
-
-    /**
      * Check for crossover
      * @return 'B' for buy, 'S' for sell, 'D' for do nothing
      */
@@ -170,17 +163,17 @@ public class TMAStrategy extends AStrategy implements Runnable
         if (fastGreaterThanSlow && TMAValuesFast[currentTick] < TMAValuesSlow[currentTick])
         {
             // downward trend - report sell
-            //System.out.println("Sell");            
+            write(currentTick, 'S', Trader.getTrader().trade('S'));            
         }
         else if(!fastGreaterThanSlow && TMAValuesFast[currentTick] > TMAValuesSlow[currentTick])
         {
             // upward trend - report buy
-            //System.out.println("Buy");            
+            write(currentTick, 'B', Trader.getTrader().trade('B'));            
         }
         else
         {
             // do nothing
-            //System.out.println("Do nothing");            
+            write(currentTick,'D',prices.GetPrice(currentTick));
         }
     }  
 }
