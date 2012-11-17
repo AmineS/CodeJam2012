@@ -46,9 +46,11 @@ public class EMAStrategy extends AStrategy {
 	}
 
 	private float compute(int N) {
-		int alpha = 2 / (N + 1);
+		float alpha = (float) (2.0 / (float) (N + 1));
 		float ema = (N == slowN) ? slow[curTick - 1] : fast[curTick - 1];
-		return (ema + alpha * (price.GetPrice(curTick) - ema));
+		float pt = price.GetPrice(curTick);
+		float res = ema + alpha * (pt - ema);
+		return round(res);
 	}
 
 	@Override
@@ -80,14 +82,18 @@ public class EMAStrategy extends AStrategy {
 			runStrategy();
 			curTick ++;
 		}
-		for (float p : fast) {
-			System.out.println(p);
+		for ( int i=0; i< ps.length; i++) {
+			System.out.println(fast[i]);
 		}
 	}
 
 	public static void main(String[] args) {
 		Prices p = Prices.GetPrices();
 		(new EMAStrategy(p)).test();
+	}
+	
+	public static float round(float x){
+		return ((float) Math.round(x * 1000) / 1000);
 	}
 
 }
