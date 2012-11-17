@@ -1,7 +1,7 @@
 
 package trading;
 
-public class LWMAStrategy extends AStrategy
+public class LWMAStrategy extends AStrategy implements Runnable
 {
 	static final int SIZE = Prices.MAX_SECONDS;
 	private static int tick = 1;
@@ -11,12 +11,12 @@ public class LWMAStrategy extends AStrategy
 	private float numerator;
 	private int denominator;
 	private Prices prices;
-	String id;
+	String strategy;
 	
 	public LWMAStrategy(Prices prices) {
 		slow = new float[SIZE];
 		fast = new float[SIZE];
-		id = "LWMA";
+		strategy = "LWMA";
 		this.prices = prices;
 	}
 	
@@ -54,7 +54,7 @@ public class LWMAStrategy extends AStrategy
 			// the sum actually starts at 1
 			sumI += i + 1;
 			// but to comply with the arrays, the index starts at 0
-			sumPrices += prices.GetPrice(tick - limit + i);
+			sumPrices += prices.GetPrice(tick - limit + i) * (i + 1);
 		}
 		return sumPrices/sumI;
     }
