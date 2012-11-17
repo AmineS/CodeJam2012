@@ -43,8 +43,8 @@ public class Dispatcher implements Runnable
         /******
          * DEBUGGING.  DELETE AFTER
          */
-        // System.out.println("The final prices were:");
-        // prices.printPrices();
+/*         System.out.println("The final prices were:");
+         prices.printPrices();*/
         /******/
     }
 
