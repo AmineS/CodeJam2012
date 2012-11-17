@@ -67,7 +67,7 @@ public class EMAStrategy extends AStrategy {
 	}
 
 	@Override
-	public void write(int tick, char type, float price, int strategy) {
+	public void write(int tick, char type, float actualPrice) {
 		// TODO Auto-generated method stub
 
 	}
