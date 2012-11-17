@@ -30,13 +30,13 @@ public class Main
         // launch Strategies
 //         smaThread = new Thread(new SMAStrategy(prices));
 //         tmaThread = new Thread(new TMAStrategy(prices));
-         emaThread = new Thread(new EMAStrategy(prices));
-//          lwmaThread = new Thread(new LWMAStrategy(prices));
+//         emaThread = new Thread(new EMAStrategy(prices));
+        lwmaThread = new Thread(new LWMAStrategy(prices));
        
 //         smaThread.start();
 //         tmaThread.start(); 
-         emaThread.start();
-//          lwmaThread.start();
+//         emaThread.start();
+          lwmaThread.start();
         
         // launch JSON Writer          
         
