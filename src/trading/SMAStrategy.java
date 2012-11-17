@@ -14,13 +14,21 @@ public class SMAStrategy extends AStrategy implements Runnable
     {
         slowSMAValues = new float[Prices.MAX_SECONDS];
         fastSMAValues = new float[Prices.MAX_SECONDS];
+        for (int i=0;i<Prices.MAX_SECONDS;i++)
+        {
+            slowSMAValues[i] = -1;
+            fastSMAValues[i] = -1;
+        }
         this.price = price;
     }
     
     @Override
     public void run()
     {
-        // TODO Auto-generated method stub
+        while(currentTick!=Prices.MAX_SECONDS)
+        {
+            runStrategy();
+        }
     }
     
     @Override 
@@ -35,6 +43,7 @@ public class SMAStrategy extends AStrategy implements Runnable
             if(currentFasterThenSlower != fasterThenSlower)
             {
                 crossover(fasterThenSlower);
+                fasterThenSlower = currentFasterThenSlower;
             }
             else
             {
@@ -47,7 +56,7 @@ public class SMAStrategy extends AStrategy implements Runnable
             fasterThenSlower = fastSMAValues[currentTick] > slowSMAValues[currentTick];
         }
         
-        currentTick++;
+        ++currentTick;
     }
     
     public float computeSlowSMA()

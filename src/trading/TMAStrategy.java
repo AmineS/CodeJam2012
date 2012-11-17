@@ -1,4 +1,5 @@
 package trading;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Class for Triangular Moving Strategy (TMA)
@@ -30,7 +31,7 @@ public class TMAStrategy extends AStrategy implements Runnable
   
     /** Prices object to get current price */
     private Prices prices = null;
-    
+    private boolean fasterThenSlower;
     /**
      * Constructor
      */
@@ -51,6 +52,14 @@ public class TMAStrategy extends AStrategy implements Runnable
      */
     public void run()
     {
+        try
+        {
+            Thread.sleep(100);
+        } catch (InterruptedException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         while(currentTick != Prices.MAX_SECONDS)
         {
             runStrategy();
@@ -62,26 +71,30 @@ public class TMAStrategy extends AStrategy implements Runnable
      */
     public void runStrategy()
     {
-        if (currentTick != 0)
+        updateSlow(currentTick, N_SLOW);
+        updateFast(currentTick, N_FAST);
+        if(currentTick > 1)
         {
-            if (TMAValuesFast[currentTick] > TMAValuesSlow[currentTick])
+            boolean currentFasterThenSlower = SMAValuesFast[currentTick] > SMAValuesSlow[currentTick];
+            if(currentFasterThenSlower != fasterThenSlower)
             {
-                fasterGTSlower = true;
+                crossover(fasterThenSlower);
+                fasterThenSlower = currentFasterThenSlower;
             }
             else
             {
-                fasterGTSlower = false;
+                // do nothing
+                write(currentTick,'D',prices.GetPrice(currentTick));
             }
         }
-
-        updateSlow(currentTick, N_SLOW);
-        updateFast(currentTick, N_FAST);
+        else
+        {
+            fasterThenSlower = SMAValuesFast[currentTick] > SMAValuesSlow[currentTick];
+        }
         
-        crossover(fasterGTSlower);
-
-        currentTick++;
+        ++currentTick;
     }
-
+    
     /**
      * update TMA(20)
      * @param t
@@ -112,6 +125,13 @@ public class TMAStrategy extends AStrategy implements Runnable
             latestTMAValueSlow = latestTMAValueSlow - (SMAValuesSlow[t-n]/n) + (SMAValuesSlow[t]/n);
             TMAValuesSlow[t] = latestTMAValueSlow;
         }
+        
+        if (t<10)
+        {
+            System.out.println("SMA:"+SMAValuesSlow[t]);
+            System.out.println("TMA:"+TMAValuesSlow[t]);
+        }
+        
     }
     
     /**
@@ -160,20 +180,15 @@ public class TMAStrategy extends AStrategy implements Runnable
      */
     public void crossover(boolean fastGreaterThanSlow)
     {
-        if (fastGreaterThanSlow && TMAValuesFast[currentTick] < TMAValuesSlow[currentTick])
+        if(fastGreaterThanSlow)
         {
-            // downward trend - report sell
-            write(currentTick, 'S', Trader.getTrader().trade('S'));            
-        }
-        else if(!fastGreaterThanSlow && TMAValuesFast[currentTick] > TMAValuesSlow[currentTick])
-        {
-            // upward trend - report buy
+            // buy
             write(currentTick, 'B', Trader.getTrader().trade('B'));            
         }
         else
         {
-            // do nothing
-            write(currentTick,'D',prices.GetPrice(currentTick));
+            // sell
+            write(currentTick, 'S', Trader.getTrader().trade('S')); 
         }
     }  
 }

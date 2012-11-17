@@ -22,13 +22,21 @@ public class Main
         Thread smaThread, lwmaThread, emaThread, tmaThread; 
         Thread jsonWriter; 
         
-        // launch Manager Scheduling Algorithm         
-        
-
-        // launch Strategies 
-        
+        // Price array 
+        Prices prices = Prices.GetPrices();
         // setup trader 
         Trader.setTraderConnection(TradingPort);
+        
+        // launch Strategies
+        // smaThread = new Thread(new SMAStrategy(prices));
+         //tmaThread = new Thread(new TMAStrategy(prices));
+//         emaThread = new Thread(new EMAStrategy(prices));
+         lwmaThread = new Thread(new LWMAStrategy(prices));
+       
+        // smaThread.start();
+        // tmaThread.start(); 
+//         emaThread.start();
+         lwmaThread.start();
         
         // launch JSON Writer          
         

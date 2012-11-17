@@ -22,6 +22,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
 	public void run(){
     	while (tick <= 32400){
     		runStrategy();
+    		crossover(true);
     	}
 	}
 	
@@ -81,17 +82,17 @@ public class LWMAStrategy extends AStrategy implements Runnable
     @Override
     public void crossover(boolean _)
     {
-     	if ((slow[tick - 1] > fast[tick - 1]) && (slow[tick] < fast[tick])){
+     	if ((slow[tick - 2] > fast[tick - 2]) && (slow[tick - 1] < fast[tick - 1])){
      		// buy
      	    write(tick, 'B', Trader.getTrader().trade('B'));
      	}
-     	else if ((slow[tick - 1] < fast[tick - 1]) && (slow[tick] > fast[tick])){
+     	else if ((slow[tick - 2] < fast[tick - 2]) && (slow[tick - 1] > fast[tick - 1])){
      		// sell
      	    write(tick, 'S', Trader.getTrader().trade('S'));
      	}
      	else {
      		// do nothing
-     	    write(tick, 'D', prices.GetPrice(tick));
+     	    write(tick, 'D', prices.GetPrice(tick - 1));
      	}
     }
 
