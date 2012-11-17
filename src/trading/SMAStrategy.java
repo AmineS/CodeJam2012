@@ -3,6 +3,13 @@ package trading;
 public class SMAStrategy extends AStrategy implements Runnable
 {
     
+    public SMAStrategy(Prices price)
+    {
+        slowSMAValues = new float[Prices.MAX_SECONDS];
+        fastSMAValues = new float[Prices.MAX_SECONDS];
+        this.price = price;
+    }
+    
     @Override
     public void run()
     {
@@ -11,10 +18,10 @@ public class SMAStrategy extends AStrategy implements Runnable
     }
     
     @Override 
-    public void runStrategy(Prices prices)
+    public void runStrategy()
     {
-        computeSlowSMA(prices);
-        computeFastSMA(prices);
+        computeSlowSMA();
+        computeFastSMA();
         
         if(currentTick > 1)
         {
@@ -32,37 +39,37 @@ public class SMAStrategy extends AStrategy implements Runnable
         currentTick++;
     }
     
-    public float computeSlowSMA(Prices prices)
+    public float computeFastSMA()
     {
-        if (currentTick <= 5)
+        if (currentTick <= FAST_N)
         {
             for(int i = 0; i < currentTick; i++)
             {
-                slowSMAValues[currentTick] += prices.GetPrice(currentTick);
+                slowSMAValues[currentTick] += price.GetPrice(currentTick);
             }
             slowSMAValues[currentTick] /= currentTick;
         }
         else
         {
-            slowSMAValues[currentTick] = slowSMAValues[currentTick - 1] + (prices.GetPrice(currentTick) - prices.GetPrice(currentTick - 5)) / 5;
+            slowSMAValues[currentTick] = slowSMAValues[currentTick - 1] + (price.GetPrice(currentTick) - price.GetPrice(currentTick - FAST_N)) / FAST_N;
         }
         
         return slowSMAValues[currentTick];
     }
     
-    public float computeFastSMA(Prices prices)
+    public float computeSlowSMA()
     {
-        if (currentTick <= 20)
+        if (currentTick <= SLOW_N)
         {
             for(int i = 0; i < currentTick; i++)
             {
-                fastSMAValues[currentTick] += prices.GetPrice(currentTick);
+                fastSMAValues[currentTick] += price.GetPrice(currentTick);
             }
             fastSMAValues[currentTick] /= currentTick;
         }
         else
         {
-            fastSMAValues[currentTick] = fastSMAValues[currentTick - 1]  + (prices.GetPrice(currentTick) - prices.GetPrice(currentTick - 20)) / 20;
+            fastSMAValues[currentTick] = fastSMAValues[currentTick - 1]  + (price.GetPrice(currentTick) - price.GetPrice(currentTick - SLOW_N)) / SLOW_N;
         }
         
         return fastSMAValues[currentTick];
@@ -97,7 +104,10 @@ public class SMAStrategy extends AStrategy implements Runnable
     
     private int currentTick;
     private boolean fasterThenSlower;
+    private Prices price;
     public static float[] slowSMAValues;
     public static float[] fastSMAValues;
+    private final int FAST_N = 5;
+    private final int SLOW_N = 20;
 
 }
