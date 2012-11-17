@@ -36,6 +36,11 @@ public class SMAStrategy extends AStrategy implements Runnable
             {
                 crossover(fasterThenSlower);
             }
+            else
+            {
+                // do nothing
+                write(currentTick,'D',price.GetPrice(currentTick));
+            }
         }
         else
         {
@@ -93,10 +98,12 @@ public class SMAStrategy extends AStrategy implements Runnable
         if(FastGreaterThanSlow)
         {
             // buy
+            write(currentTick, 'B', Trader.getTrader().trade('B'));            
         }
         else
         {
             // sell
+            write(currentTick, 'S', Trader.getTrader().trade('S')); 
         }
     }
         
@@ -115,12 +122,4 @@ public class SMAStrategy extends AStrategy implements Runnable
     {
         return fastSMAValues;
     }
-
-    public void write(int tick, char type, float actualPrice)
-    {
-        
-    }
-    
-    
-
 }

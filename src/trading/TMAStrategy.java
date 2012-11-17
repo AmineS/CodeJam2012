@@ -177,6 +177,3 @@ public class TMAStrategy extends AStrategy implements Runnable
         }
     }  
 }
-
-
-

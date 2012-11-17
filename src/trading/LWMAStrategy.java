@@ -83,7 +83,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
     {
      	if ((slow[tick - 1] > fast[tick - 1]) && (slow[tick] < fast[tick])){
      		// buy
-     	    write(tick, 'B', Trader.getTrader().trade('S'));
+     	    write(tick, 'B', Trader.getTrader().trade('B'));
      	}
      	else if ((slow[tick - 1] < fast[tick - 1]) && (slow[tick] > fast[tick])){
      		// sell
@@ -91,7 +91,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
      	}
      	else {
      		// do nothing
-     	   write(tick, 'D', Trader.getTrader().trade('S'));
+     	    write(tick, 'D', prices.GetPrice(tick));
      	}
     }
 
