@@ -40,7 +40,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
         System.out.println("The LWMA20 is " + fast[tick]);
         */
     }
-    
+	
     private float compute(int n){
     	sumI = 0;
     	sumPrices = 0;
@@ -56,7 +56,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
 			// but to comply with the arrays, the index starts at 0
 			sumPrices += prices.GetPrice(tick - limit + i) * (i + 1);
 		}
-		return sumPrices/sumI;
+		return (float) (Math.round(sumPrices/sumI * 1000) / 1000.0);
     }
     
     /*
