@@ -46,6 +46,7 @@ public class SMAStrategy extends AStrategy implements Runnable
             for(int i = 0; i < currentTick; i++)
             {
                 slowSMAValues[currentTick] += price.GetPrice(currentTick);
+                System.out.println(slowSMAValues[currentTick]);
             }
             slowSMAValues[currentTick] /= currentTick;
         }
@@ -106,14 +107,21 @@ public class SMAStrategy extends AStrategy implements Runnable
     
     public void test(){
         double[] ps = {61.590, 61.440, 61.320, 61.670, 61.920, 62.610, 62.880, 63.060, 63.290, 63.320, 63.260, 63.120, 62.240, 62.190, 62.890};
-        int tick =0;
-        for(double d : ps){
-            price.SetPrice(tick++, (float) d);
+        this.currentTick =0;
+        for(double d : ps)
+        {
+            price.SetPrice(this.currentTick++, (float) d);
             runStrategy();
         }
-        for(float p: fastSMAValues){
+        for(float p: fastSMAValues)
+        {
             System.out.println(p);
         }
+    }
+    
+    public static void main(String[] args) {
+        Prices p = Prices.GetPrices();
+        (new SMAStrategy(p)).test();
     }
 
     private int currentTick;
