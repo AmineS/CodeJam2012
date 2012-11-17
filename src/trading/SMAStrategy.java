@@ -14,7 +14,6 @@ public class SMAStrategy extends AStrategy implements Runnable
     public void run()
     {
         // TODO Auto-generated method stub
-        
     }
     
     @Override 
@@ -41,14 +40,16 @@ public class SMAStrategy extends AStrategy implements Runnable
     
     public float computeSlowSMA()
     {
-        if (currentTick <= SLOW_N)
+        if (currentTick < SLOW_N)
         {
-            for(int i = 0; i < currentTick; i++)
+            for (int i = 0; i <= currentTick; i++)
             {
-                slowSMAValues[currentTick] += price.GetPrice(currentTick);
-                System.out.println(slowSMAValues[currentTick]);
+                slowSMAValues[currentTick] += price.GetPrice(i);
             }
-            slowSMAValues[currentTick] /= currentTick;
+            if (currentTick > 0)
+            {
+                slowSMAValues[currentTick] /= currentTick + 1;
+            }
         }
         else
         {
@@ -60,13 +61,16 @@ public class SMAStrategy extends AStrategy implements Runnable
     
     public float computeFastSMA()
     {
-        if (currentTick <= FAST_N)
+        if (currentTick < FAST_N)
         {
-            for(int i = 0; i < currentTick; i++)
+            for (int i = 0; i <= currentTick; i++)
             {
-                fastSMAValues[currentTick] += price.GetPrice(currentTick);
+                fastSMAValues[currentTick] += price.GetPrice(i);
             }
-            fastSMAValues[currentTick] /= currentTick;
+            if (currentTick != 0)
+            {
+                fastSMAValues[currentTick] /= currentTick + 1;
+            }
         }
         else
         {
@@ -105,24 +109,6 @@ public class SMAStrategy extends AStrategy implements Runnable
         return fastSMAValues;
     }
     
-    public void test(){
-        double[] ps = {61.590, 61.440, 61.320, 61.670, 61.920, 62.610, 62.880, 63.060, 63.290, 63.320, 63.260, 63.120, 62.240, 62.190, 62.890};
-        this.currentTick =0;
-        for(double d : ps)
-        {
-            price.SetPrice(this.currentTick++, (float) d);
-            runStrategy();
-        }
-        for(float p: fastSMAValues)
-        {
-            System.out.println(p);
-        }
-    }
-    
-    public static void main(String[] args) {
-        Prices p = Prices.GetPrices();
-        (new SMAStrategy(p)).test();
-    }
 
     private int currentTick;
     private boolean fasterThenSlower;

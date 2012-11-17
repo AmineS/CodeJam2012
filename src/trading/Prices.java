@@ -15,10 +15,11 @@ public class Prices
     
     
     private static Prices pricesInstance = new Prices(); 
+    
     private Prices()
     {
         prices = new float[Prices.MAX_SECONDS];
-        for(int i=0; i<prices.length; ++i)
+        for(int i = 0; i < prices.length; ++i)
         {
             prices[i] = -1f;
         }
@@ -27,7 +28,8 @@ public class Prices
     public float GetPrice(int tick)
     {
         return prices[tick];
-    }  
+    }
+    
     public void SetPrice(int tick, float value)
     {
         prices[tick] = value; 
