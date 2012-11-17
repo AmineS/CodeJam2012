@@ -1,5 +1,7 @@
 package program;
 
+import trading.*;
+
 public class Main
 {
 
@@ -15,8 +17,8 @@ public class Main
         int TradingPort = 3001;                
         /************************************/
         
-        Thread dispatcher;
-        Thread trader; 
+        Thread dispatcherThread;
+        Thread traderThread; 
         Thread smaThread, lwmaThread, emaThread, tmaThread; 
         Thread jsonWriter; 
         
@@ -25,7 +27,8 @@ public class Main
 
         // launch Strategies 
         
-        // launch Trader 
+        // setup trader 
+        Trader.setTraderConnection(TradingPort);
         
         // launch JSON Writer          
         
@@ -34,8 +37,15 @@ public class Main
         // launch Exchange Server 
         
         // launch Dispatcher 
-        dispatcher = new Thread(new Dispatcher(PricesPort));
-        dispatcher.start();
+        dispatcherThread = new Thread(new Dispatcher(PricesPort));
+        dispatcherThread.start();
+        
+        
+        /*** TO DELETE
+         * debugging code. 
+         * Thread tester = new Thread(new TraderTest(Trader.getTrader()));
+         * tester.start();  
+        **/
     }
 
 }
