@@ -88,5 +88,5 @@ public class EMAStrategy extends AStrategy implements Runnable {
 		}
 	}
 	
-	
+
 }
