@@ -47,9 +47,7 @@ public class EMAStrategy extends AStrategy implements Runnable {
 		}
 		boolean oldInv = FastGreaterThanSlow;
 		FastGreaterThanSlow = fast[curTick] > slow[curTick];
-		if (FastGreaterThanSlow != oldInv) {
-			crossover(FastGreaterThanSlow);
-		}
+		cross(FastGreaterThanSlow, oldInv);
 
 	}
 
@@ -65,22 +63,19 @@ public class EMAStrategy extends AStrategy implements Runnable {
 	public int getTick() {
 		return curTick;
 	}
-
-	@Override
-	public void write(int tick, char type, float actualPrice) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void crossover(boolean FastGreaterThanSlow) {
-		if (FastGreaterThanSlow) {
-			// buy
-		} else {
-			// sell
+		
+	private void cross(boolean FastGreaterThanSlow, boolean oldFastGreaterThanSlow ){
+		if(FastGreaterThanSlow == oldFastGreaterThanSlow){
+			  // do nothing
+            write(curTick,'D',price.GetPrice(curTick));
+		}else if(!FastGreaterThanSlow){
+			// downward trend - report sell
+            write(curTick, 'S', Trader.getTrader().trade('S')); 
+		}else{
+			// upward trend - report buy
+            write(curTick, 'B', Trader.getTrader().trade('B')); 
 		}
 	}
-
 
 	public static float round(float x) {
 		return ((float) Math.round(x * 1000) / 1000);
@@ -91,4 +86,6 @@ public class EMAStrategy extends AStrategy implements Runnable {
 			runStrategy();
 		}
 	}
+	
+	
 }
