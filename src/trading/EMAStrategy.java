@@ -70,10 +70,10 @@ public class EMAStrategy extends AStrategy implements Runnable {
             write(curTick,'D',price.GetPrice(curTick));
 		}else if(!FastGreaterThanSlow){
 			// downward trend - report sell
-            write(curTick, 'S', Trader.getTrader().trade('S')); 
+            write(curTick, 'S', Trader.getTrader().trade('S'));
 		}else{
 			// upward trend - report buy
-            write(curTick, 'B', Trader.getTrader().trade('B')); 
+            write(curTick, 'B', Trader.getTrader().trade('B'));
 		}
 	}
 
@@ -84,6 +84,7 @@ public class EMAStrategy extends AStrategy implements Runnable {
 	public void run() {
 		while (curTick != Prices.MAX_SECONDS) {
 			runStrategy();
+			++curTick;
 		}
 	}
 	
