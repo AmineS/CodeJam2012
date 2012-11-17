@@ -1,6 +1,6 @@
 package trading;
 
-public class EMAStrategy extends AStrategy {
+public class EMAStrategy extends AStrategy implements Runnable {
 
 	private final int SIZE = Prices.MAX_SECONDS;
 	private final float ERROR = (float) 0.001;
@@ -47,9 +47,7 @@ public class EMAStrategy extends AStrategy {
 		}
 		boolean oldInv = FastGreaterThanSlow;
 		FastGreaterThanSlow = fast[curTick] > slow[curTick];
-		if (FastGreaterThanSlow != oldInv) {
-			crossover(FastGreaterThanSlow);
-		}
+		cross(FastGreaterThanSlow, oldInv);
 
 	}
 
@@ -65,19 +63,17 @@ public class EMAStrategy extends AStrategy {
 	public int getTick() {
 		return curTick;
 	}
-
-	@Override
-	public void write(int tick, char type, float price, int strategy) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void crossover(boolean FastGreaterThanSlow) {
-		if (FastGreaterThanSlow) {
-			// buy
-		} else {
-			// sell
+		
+	private void cross(boolean FastGreaterThanSlow, boolean oldFastGreaterThanSlow ){
+		if(FastGreaterThanSlow == oldFastGreaterThanSlow){
+			  // do nothing
+            write(curTick,'D',price.GetPrice(curTick));
+		}else if(!FastGreaterThanSlow){
+			// downward trend - report sell
+            write(curTick, 'S', Trader.getTrader().trade('S')); 
+		}else{
+			// upward trend - report buy
+            write(curTick, 'B', Trader.getTrader().trade('B')); 
 		}
 	}
 
@@ -85,4 +81,11 @@ public class EMAStrategy extends AStrategy {
 		return ((float) Math.round(x * 1000) / 1000);
 	}
 
+	public void run() {
+		while (curTick != Prices.MAX_SECONDS) {
+			runStrategy();
+		}
+	}
+	
+	
 }

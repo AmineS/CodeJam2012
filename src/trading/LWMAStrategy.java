@@ -8,8 +8,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
 	private int i, limit;
 	private float[] slow, fast;
 	private float sumI, sumPrices;
-	private float numerator;
-	private int denominator;
+
 	private Prices prices;
 	String strategy;
 	
@@ -78,24 +77,21 @@ public class LWMAStrategy extends AStrategy implements Runnable
     {
         return tick;
     }
-
-    @Override
-    public void write(int tick, char type, float price, int strategy)
-    {
-        // TODO Auto-generated method stub
-    }
     
     @Override
     public void crossover(boolean _)
     {
      	if ((slow[tick - 1] > fast[tick - 1]) && (slow[tick] < fast[tick])){
      		// buy
+     	    write(tick, 'B', Trader.getTrader().trade('B'));
      	}
      	else if ((slow[tick - 1] < fast[tick - 1]) && (slow[tick] > fast[tick])){
      		// sell
+     	    write(tick, 'S', Trader.getTrader().trade('S'));
      	}
      	else {
      		// do nothing
+     	    write(tick, 'D', prices.GetPrice(tick));
      	}
     }
 

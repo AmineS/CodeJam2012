@@ -2,7 +2,14 @@ package trading;
 
 public class SMAStrategy extends AStrategy implements Runnable
 {
-    
+    private int currentTick;
+    private boolean fasterThenSlower;
+    private Prices price;
+    public static float[] slowSMAValues;
+    public static float[] fastSMAValues;
+    private final int FAST_N = 5;
+    private final int SLOW_N = 20;
+
     public SMAStrategy(Prices price)
     {
         slowSMAValues = new float[Prices.MAX_SECONDS];
@@ -28,6 +35,11 @@ public class SMAStrategy extends AStrategy implements Runnable
             if(currentFasterThenSlower != fasterThenSlower)
             {
                 crossover(fasterThenSlower);
+            }
+            else
+            {
+                // do nothing
+                write(currentTick,'D',price.GetPrice(currentTick));
             }
         }
         else
@@ -86,10 +98,12 @@ public class SMAStrategy extends AStrategy implements Runnable
         if(FastGreaterThanSlow)
         {
             // buy
+            write(currentTick, 'B', Trader.getTrader().trade('B'));            
         }
         else
         {
             // sell
+            write(currentTick, 'S', Trader.getTrader().trade('S')); 
         }
     }
         
@@ -108,35 +122,4 @@ public class SMAStrategy extends AStrategy implements Runnable
     {
         return fastSMAValues;
     }
-
-    
-  public void test() {
-  double[] ps = { 61.590, 61.440, 61.320, 61.670, 61.920, 62.610, 62.880, 63.060, 63.290, 63.320, 63.260, 63.120, 62.240, 62.190, 62.890 };
-  this.currentTick = 0;
-  for(int i=0; i < 15; i++)  
-  {
-      price.SetPrice(this.currentTick, (float) ps[i]);
-      runStrategy();
-  }
-  for(int i=0; i< 15; i++) 
-  {
-      System.out.println(fastSMAValues[i]);
-  }
-}
-
-public static void main(String[] args) {
-  Prices p = Prices.GetPrices();
-  (new SMAStrategy(p)).test();
-}
-    
-
-
-    private int currentTick;
-    private boolean fasterThenSlower;
-    private Prices price;
-    public static float[] slowSMAValues;
-    public static float[] fastSMAValues;
-    private final int FAST_N = 5;
-    private final int SLOW_N = 20;
-
 }
