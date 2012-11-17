@@ -10,6 +10,7 @@ public class Prices
     public static int MAX_SECONDS = 32400; 
     private float[] prices;
 
+    boolean stop = false;
     
     private Object lock = new Object();
     
@@ -66,5 +67,21 @@ public class Prices
        {
            System.out.println("The price at tick " + i + " is " + prices[i]);
        }
+    }
+    
+    public  boolean getStop()
+    {
+        return toggleStop(false);
+    }
+    
+    public void setStop(boolean stop_)
+    {
+        if(stop_ && !stop) toggleStop(true);
+    }
+    
+    private synchronized boolean toggleStop(boolean toggle_)
+    {
+        if(toggle_) stop = !stop;        
+        return stop;
     }
 }

@@ -4,7 +4,7 @@ package trading;
 public class LWMAStrategy extends AStrategy implements Runnable
 {
 	static final int SIZE = Prices.MAX_SECONDS;
-	private static int tick = 1;
+	private static int tick = 0;
 	private int i, limit;
 	private float[] slow, fast;
 	private float sumI, sumPrices;
@@ -13,6 +13,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
 	String strategy;
 	
 	public LWMAStrategy(Prices prices) {
+		tick = 0;
 		slow = new float[SIZE];
 		fast = new float[SIZE];
 		strategy = "LWMA";
@@ -20,9 +21,11 @@ public class LWMAStrategy extends AStrategy implements Runnable
 	}
 	
 	public void run(){
-    	while (tick <= 32400){
+    	while (tick < 32400){
     		runStrategy();
     		crossover(true);
+        	// increment tick
+        	tick++;
     	}
 	}
 	
@@ -33,8 +36,6 @@ public class LWMAStrategy extends AStrategy implements Runnable
     	slow[tick] = compute(5);
     	// to calculate LWMA20
     	fast[tick] = compute(20);
-    	// increment tick
-    	tick++;
     	/* DEBUG
         System.out.println("The LWMA5 is " + slow[tick]);
         System.out.println("The LWMA20 is " + fast[tick]);
@@ -45,7 +46,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
     	sumI = 0;
     	sumPrices = 0;
 		if (tick < n){
-			limit = tick;
+			limit = tick + 1;
 		}
 		else {
 			limit = n;
@@ -54,7 +55,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
 			// the sum actually starts at 1
 			sumI += i + 1;
 			// but to comply with the arrays, the index starts at 0
-			sumPrices += prices.GetPrice(tick - limit + i) * (i + 1);
+			sumPrices += prices.GetPrice(tick - limit + i + 1) * (i + 1);
 		}
 		return (float) (Math.round(sumPrices/sumI * 1000) / 1000.0);
     }
@@ -82,18 +83,20 @@ public class LWMAStrategy extends AStrategy implements Runnable
     @Override
     public void crossover(boolean _)
     {
-     	if ((slow[tick - 2] > fast[tick - 2]) && (slow[tick - 1] < fast[tick - 1])){
-     		// buy
-     	    write(tick, 'B', Trader.getTrader().trade('B'));
-     	}
-     	else if ((slow[tick - 2] < fast[tick - 2]) && (slow[tick - 1] > fast[tick - 1])){
-     		// sell
-     	    write(tick, 'S', Trader.getTrader().trade('S'));
-     	}
-     	else {
-     		// do nothing
-     	    write(tick, 'D', prices.GetPrice(tick - 1));
-     	}
+    	if (tick > 0){
+    		if ((slow[tick - 1] > fast[tick - 1]) && (slow[tick] < fast[tick])){
+     			// buy
+     	    	write(tick, 'B', Trader.getTrader().trade('B'));
+     		}
+     		else if ((slow[tick - 1] < fast[tick - 1]) && (slow[tick] > fast[tick])){
+     			// sell
+     	    	write(tick, 'S', Trader.getTrader().trade('S'));
+     		}
+     		else {
+     			// do nothing
+     			write(tick, 'D', prices.GetPrice(tick));
+     		}
+    	}
     }
 
 }

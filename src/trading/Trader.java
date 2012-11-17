@@ -21,15 +21,12 @@ public class Trader
      * @return
      */
     public synchronized float trade(char t)
-    {
-        
+    {               
         float price = -1f;
-        if(!(t=='B' || t=='S')) return -1f;
-        
+        if(!(t=='B' || t=='S') || Prices.GetPrices().getStop()) return -1f;                
         try 
         {
             transactionStream.println(t);
-            //priceString.append(transactionPriceStream.readLine());
             
             char nextChar = (char)transactionPriceStream.read();
             if(nextChar == 'E') return -1f;
@@ -66,6 +63,7 @@ public class Trader
             trader.transactionPriceStream = new BufferedReader(new InputStreamReader(trader.pricesSocket.getInputStream()));
             trader.priceString = new StringBuffer();
             trader.transactionStream = new PrintWriter(trader.pricesSocket.getOutputStream(), true);
+
         }
         catch (IOException e)
         {
