@@ -2,18 +2,18 @@ package trading;
 
 public class EMAStrategy extends AStrategy {
 
-	static final int SIZE = Prices.MAX_SECONDS;
-	static final float ERROR = (float) 0.001;
+	private final int SIZE = Prices.MAX_SECONDS;
+	private final float ERROR = (float) 0.001;
 
 	// class variables
-	int curTick = 0;
-	int slowN = 20, fastN =5;
-	float[] slow;
-	float[] fast;
-	String id;
-	boolean FastGreaterThanSlow;
-	int alpha;
-	Prices price;
+	private int curTick = 0;
+	private int slowN = 20, fastN =5;
+	private float[] slow;
+	private float[] fast;
+	private String id;
+	private boolean FastGreaterThanSlow;
+	private int alpha;
+	private Prices price;
 
 	public EMAStrategy(Prices prices) {
 		curTick = 0;
@@ -71,8 +71,23 @@ public class EMAStrategy extends AStrategy {
 		}
 	}
 	
-	public void test(int prices){
-		
+	public void test(){
+		double[] ps = {61.590, 61.440, 61.320, 61.670, 61.920, 62.610, 62.880, 63.060, 63.290, 63.320, 63.260, 63.120, 62.240, 62.190, 62.890};
+		int tick =0;
+		for(double d : ps){
+			price.SetPrice(tick++, (float) d);
+			runStrategy();
+		}
+		for(float p: fast){
+			System.out.println(p);
+		}
+	}
+
+	
+	
+	public static void main(String[] args){
+		Prices p =  Prices.GetPrices();
+		(new EMAStrategy(p)).test();
 	}
 	
 }
