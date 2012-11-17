@@ -17,11 +17,19 @@ public class EMAStrategy extends AStrategy {
 
 	public EMAStrategy(Prices prices) {
 		curTick = 0;
-		slow = new float[SIZE];
-		fast = new float[SIZE];
+		slow = init();
+		fast = init();
 		id = "EMA";
 		this.price = prices;
 
+	}
+
+	private float[] init() {
+		float[] a = new float[SIZE];
+		for (int i = 0; i < a.length; ++i) {
+			a[i] = -1f;
+		}
+		return a;
 	}
 
 	@Override
@@ -73,7 +81,7 @@ public class EMAStrategy extends AStrategy {
 		}
 	}
 
-	public static float round(float x){
+	public static float round(float x) {
 		return ((float) Math.round(x * 1000) / 1000);
 	}
 
