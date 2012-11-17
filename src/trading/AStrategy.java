@@ -4,7 +4,7 @@ public abstract class AStrategy implements IStrategy
 {
 
     @Override
-    public void runStrategy(Prices prices)
+    public void runStrategy()
     {
         // TODO Auto-generated method stub
 

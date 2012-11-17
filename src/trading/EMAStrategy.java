@@ -25,10 +25,10 @@ public class EMAStrategy extends AStrategy {
 	}
 
 	@Override
-    public void runStrategy(Prices prices)
+    public void runStrategy()
     {
 		if(curTick==0){
-			slow[curTick] = prices.GetPrice(curTick);
+			slow[curTick] = price.GetPrice(curTick);
 			fast [curTick] = slow[curTick];
 			return;
 		}
@@ -62,7 +62,7 @@ public class EMAStrategy extends AStrategy {
 		// TODO Auto-generated method stub
 
 	}
-
+	@Override
 	public void crossover(boolean FastGreaterThanSlow) {
 		if(FastGreaterThanSlow){
 			// buy
@@ -70,4 +70,9 @@ public class EMAStrategy extends AStrategy {
 			// sell
 		}
 	}
+	
+	public void test(int prices){
+		
+	}
+	
 }
