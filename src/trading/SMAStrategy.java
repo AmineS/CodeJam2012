@@ -28,6 +28,7 @@ public class SMAStrategy extends AStrategy implements Runnable
         {
             fasterThenSlower = fastSMAValues[currentTick] > slowSMAValues[currentTick];
         }
+        
         currentTick++;
     }
     
@@ -68,10 +69,13 @@ public class SMAStrategy extends AStrategy implements Runnable
     }
     
     @Override
-    public char crossover()
+    public void crossover(boolean FastGreaterThanSlow)
     {
-     // TODO Auto-generated method stub
-        return 'A';
+        if(FastGreaterThanSlow){
+            // buy
+        }else{
+            // sell
+        }
     }
         
     @Override
@@ -80,12 +84,12 @@ public class SMAStrategy extends AStrategy implements Runnable
         return currentTick;
     }
     
-    public float[] getSlow()
+    public static float[] getSlow()
     {
         return slowSMAValues;
     }
     
-    public float[] getFast(Prices prices)
+    public static float[] getFast()
     {
         return fastSMAValues;
     }
