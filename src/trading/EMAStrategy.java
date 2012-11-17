@@ -7,7 +7,7 @@ public class EMAStrategy extends AStrategy {
 
 	// class variables
 	private int curTick = 0;
-	private int slowN = 20, fastN =5;
+	private int slowN = 20, fastN = 5;
 	private float[] slow;
 	private float[] fast;
 	private String id;
@@ -21,35 +21,34 @@ public class EMAStrategy extends AStrategy {
 		fast = new float[SIZE];
 		id = "EMA";
 		this.price = prices;
-		
+
 	}
 
 	@Override
-    public void runStrategy()
-    {
-		if(curTick==0){
+	public void runStrategy() {
+		if (curTick == 0) {
 			slow[curTick] = price.GetPrice(curTick);
-			fast [curTick] = slow[curTick];
+			fast[curTick] = slow[curTick];
 			return;
 		}
-			slow[curTick] = compute(slowN);
-			fast[curTick] = compute(fastN);
-			if(curTick ==1){
-				FastGreaterThanSlow = fast[curTick] > slow[curTick];
-				return;
-			}
-			boolean oldInv = FastGreaterThanSlow;
+		slow[curTick] = compute(slowN);
+		fast[curTick] = compute(fastN);
+		if (curTick == 1) {
 			FastGreaterThanSlow = fast[curTick] > slow[curTick];
-			if(FastGreaterThanSlow != oldInv){
-				crossover(FastGreaterThanSlow);
-			}
+			return;
+		}
+		boolean oldInv = FastGreaterThanSlow;
+		FastGreaterThanSlow = fast[curTick] > slow[curTick];
+		if (FastGreaterThanSlow != oldInv) {
+			crossover(FastGreaterThanSlow);
+		}
 
-    }
-	
-	private float compute(int N){
-		int alpha = 2/(N+1);
-		float ema = (N == slowN) ? slow[curTick-1]: fast[curTick-1];
-		return (ema + alpha*(price.GetPrice(curTick) - ema));
+	}
+
+	private float compute(int N) {
+		int alpha = 2 / (N + 1);
+		float ema = (N == slowN) ? slow[curTick - 1] : fast[curTick - 1];
+		return (ema + alpha * (price.GetPrice(curTick) - ema));
 	}
 
 	@Override
@@ -62,32 +61,32 @@ public class EMAStrategy extends AStrategy {
 		// TODO Auto-generated method stub
 
 	}
+
 	@Override
 	public void crossover(boolean FastGreaterThanSlow) {
-		if(FastGreaterThanSlow){
+		if (FastGreaterThanSlow) {
 			// buy
-		}else{
+		} else {
 			// sell
 		}
 	}
-	
-	public void test(){
-		double[] ps = {61.590, 61.440, 61.320, 61.670, 61.920, 62.610, 62.880, 63.060, 63.290, 63.320, 63.260, 63.120, 62.240, 62.190, 62.890};
-		int tick =0;
-		for(double d : ps){
-			price.SetPrice(tick++, (float) d);
+
+	public void test() {
+		double[] ps = { 61.590, 61.440, 61.320, 61.670, 61.920, 62.610, 62.880,
+				63.060, 63.290, 63.320, 63.260, 63.120, 62.240, 62.190, 62.890 };
+		this.curTick = 0;
+		for (double d : ps) {
+			price.SetPrice(this.curTick++, (float) d);
 			runStrategy();
 		}
-		for(float p: fast){
+		for (float p : fast) {
 			System.out.println(p);
 		}
 	}
 
-	
-	
-	public static void main(String[] args){
-		Prices p =  Prices.GetPrices();
+	public static void main(String[] args) {
+		Prices p = Prices.GetPrices();
 		(new EMAStrategy(p)).test();
 	}
-	
+
 }
