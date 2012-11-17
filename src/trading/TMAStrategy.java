@@ -54,12 +54,12 @@ public class TMAStrategy extends AStrategy implements Runnable
     {
         try
         {
-            Thread.sleep(100);
+            Thread.sleep(10);
         } catch (InterruptedException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
         while(currentTick != Prices.MAX_SECONDS)
         {
             runStrategy();
@@ -124,12 +124,6 @@ public class TMAStrategy extends AStrategy implements Runnable
             latestTMAValueSlow = TMAValuesSlow[t-1];
             latestTMAValueSlow = latestTMAValueSlow - (SMAValuesSlow[t-n]/n) + (SMAValuesSlow[t]/n);
             TMAValuesSlow[t] = latestTMAValueSlow;
-        }
-        
-        if (t<10)
-        {
-            System.out.println("SMA:"+SMAValuesSlow[t]);
-            System.out.println("TMA:"+TMAValuesSlow[t]);
         }
         
     }
