@@ -1,6 +1,6 @@
 package trading;
 
-public class EMAStrategy extends AStrategy {
+public class EMAStrategy extends AStrategy implements Runnable {
 
 	private final int SIZE = Prices.MAX_SECONDS;
 	private final float ERROR = (float) 0.001;
@@ -95,7 +95,7 @@ public class EMAStrategy extends AStrategy {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void runTest() {
 		Prices p = Prices.GetPrices();
 		(new EMAStrategy(p)).test();
 	}
@@ -104,4 +104,9 @@ public class EMAStrategy extends AStrategy {
 		return ((float) Math.round(x * 1000) / 1000);
 	}
 
+	public void run() {
+		while (curTick != Prices.MAX_SECONDS) {
+			runStrategy();
+		}
+	}
 }
