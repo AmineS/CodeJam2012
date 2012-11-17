@@ -21,7 +21,7 @@ public class SMAStrategy extends AStrategy implements Runnable
             boolean currentFasterThenSlower = fastSMAValues[currentTick] > slowSMAValues[currentTick];
             if(currentFasterThenSlower != fasterThenSlower)
             {
-                crossover(currentFasterThenSlower);
+                crossover(fasterThenSlower);
             }
         }
         else
