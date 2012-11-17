@@ -39,9 +39,9 @@ public class SMAStrategy extends AStrategy implements Runnable
         currentTick++;
     }
     
-    public float computeFastSMA()
+    public float computeSlowSMA()
     {
-        if (currentTick <= FAST_N)
+        if (currentTick <= SLOW_N)
         {
             for(int i = 0; i < currentTick; i++)
             {
@@ -51,15 +51,15 @@ public class SMAStrategy extends AStrategy implements Runnable
         }
         else
         {
-            slowSMAValues[currentTick] = slowSMAValues[currentTick - 1] + (price.GetPrice(currentTick) - price.GetPrice(currentTick - FAST_N)) / FAST_N;
+            slowSMAValues[currentTick] = slowSMAValues[currentTick - 1] + (price.GetPrice(currentTick) - price.GetPrice(currentTick - SLOW_N)) / SLOW_N;
         }
         
         return slowSMAValues[currentTick];
     }
     
-    public float computeSlowSMA()
+    public float computeFastSMA()
     {
-        if (currentTick <= SLOW_N)
+        if (currentTick <= FAST_N)
         {
             for(int i = 0; i < currentTick; i++)
             {
@@ -69,7 +69,7 @@ public class SMAStrategy extends AStrategy implements Runnable
         }
         else
         {
-            fastSMAValues[currentTick] = fastSMAValues[currentTick - 1]  + (price.GetPrice(currentTick) - price.GetPrice(currentTick - SLOW_N)) / SLOW_N;
+            fastSMAValues[currentTick] = fastSMAValues[currentTick - 1]  + (price.GetPrice(currentTick) - price.GetPrice(currentTick - FAST_N)) / FAST_N;
         }
         
         return fastSMAValues[currentTick];
@@ -78,9 +78,12 @@ public class SMAStrategy extends AStrategy implements Runnable
     @Override
     public void crossover(boolean FastGreaterThanSlow)
     {
-        if(FastGreaterThanSlow){
+        if(FastGreaterThanSlow)
+        {
             // buy
-        }else{
+        }
+        else
+        {
             // sell
         }
     }
@@ -101,7 +104,6 @@ public class SMAStrategy extends AStrategy implements Runnable
         return fastSMAValues;
     }
 
-    
     private int currentTick;
     private boolean fasterThenSlower;
     private Prices price;
