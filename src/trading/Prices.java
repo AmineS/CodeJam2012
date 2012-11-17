@@ -3,7 +3,7 @@ package trading;
 public class Prices
 {
 
-    private int MAX_SECONDS = 32400; 
+    private static int MAX_SECONDS = 32400; 
     private float[] prices;
 
     
@@ -17,7 +17,7 @@ public class Prices
     private static Prices pricesInstance = new Prices(); 
     private Prices()
     {
-        prices = new float[MAX_SECONDS];
+        prices = new float[Prices.MAX_SECONDS];
         for(int i=0; i<prices.length; ++i)
         {
             prices[i] = -1f;
