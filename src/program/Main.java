@@ -28,15 +28,15 @@ public class Main
         Trader.setTraderConnection(TradingPort);
         
         // launch Strategies
-        // smaThread = new Thread(new SMAStrategy(prices));
-         //tmaThread = new Thread(new TMAStrategy(prices));
-//         emaThread = new Thread(new EMAStrategy(prices));
-         lwmaThread = new Thread(new LWMAStrategy(prices));
+//         smaThread = new Thread(new SMAStrategy(prices));
+//         tmaThread = new Thread(new TMAStrategy(prices));
+         emaThread = new Thread(new EMAStrategy(prices));
+//          lwmaThread = new Thread(new LWMAStrategy(prices));
        
-        // smaThread.start();
-        // tmaThread.start(); 
-//         emaThread.start();
-         lwmaThread.start();
+//         smaThread.start();
+//         tmaThread.start(); 
+         emaThread.start();
+//          lwmaThread.start();
         
         // launch JSON Writer          
         
