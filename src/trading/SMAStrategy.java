@@ -59,7 +59,7 @@ public class SMAStrategy extends AStrategy implements Runnable
         ++currentTick;
     }
     
-    public float computeSlowSMA()
+    public void computeSlowSMA()
     {
         if (currentTick < SLOW_N)
         {
@@ -76,11 +76,9 @@ public class SMAStrategy extends AStrategy implements Runnable
         {
             slowSMAValues[currentTick] = slowSMAValues[currentTick - 1] + (price.GetPrice(currentTick) - price.GetPrice(currentTick - SLOW_N)) / SLOW_N;
         }
-        
-        return slowSMAValues[currentTick];
     }
     
-    public float computeFastSMA()
+    public void computeFastSMA()
     {
         if (currentTick < FAST_N)
         {
@@ -97,8 +95,6 @@ public class SMAStrategy extends AStrategy implements Runnable
         {
             fastSMAValues[currentTick] = fastSMAValues[currentTick - 1]  + (price.GetPrice(currentTick) - price.GetPrice(currentTick - FAST_N)) / FAST_N;
         }
-        
-        return fastSMAValues[currentTick];
     }
     
     @Override
