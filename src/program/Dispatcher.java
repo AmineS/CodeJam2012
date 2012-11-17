@@ -32,7 +32,7 @@ public class Dispatcher implements Runnable
                     priceString.append(nextChar);
                 }     
                 
-                nextChar = (char) pricesStream.read();
+                nextChar = (char) pricesStream.read();                
             }
         }
         catch(IOException e)
@@ -43,8 +43,8 @@ public class Dispatcher implements Runnable
         /******
          * DEBUGGING.  DELETE AFTER
          */
-        System.out.println("The final prices were:");
-        prices.printPrices();
+        // System.out.println("The final prices were:");
+        // prices.printPrices();
         /******/
     }
 
