@@ -55,6 +55,7 @@ public class TMAStrategy extends AStrategy implements Runnable
         while(currentTick != Prices.MAX_SECONDS)
         {
             runStrategy();
+            ++currentTick;
         }
     }
     
