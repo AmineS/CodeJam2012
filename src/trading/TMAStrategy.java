@@ -55,6 +55,7 @@ public class TMAStrategy extends AStrategy implements Runnable
         while(currentTick != Prices.MAX_SECONDS)
         {
             runStrategy();
+            ++currentTick;
         }
     }
     
@@ -71,7 +72,6 @@ public class TMAStrategy extends AStrategy implements Runnable
 
         detectCross();
         
-        ++currentTick;
     }
     
     /**
@@ -123,7 +123,7 @@ public class TMAStrategy extends AStrategy implements Runnable
             {
                 for (int k=0; k<=t; k++)
                 {
-                    fastTMAValues[t] += fastSMAValues[t];
+                    fastTMAValues[t] += fastSMAValues[k];
                 }
                 fastTMAValues[t] /= t+1;
             }
@@ -212,15 +212,19 @@ public class TMAStrategy extends AStrategy implements Runnable
     }  
     
     private void detectCross(){
-        if(fastSMAValues[currentTick] > slowSMAValues[currentTick] && slowSMAValues[currentTick-1] > fastSMAValues[currentTick-1]){
+
+        if(fastTMAValues[currentTick] > slowTMAValues[currentTick] && slowTMAValues[currentTick-1] > fastTMAValues[currentTick-1]){
             // upward trend - report buy
             write(currentTick, 'B', Trader.getTrader().trade('B'));
-        }else if(fastSMAValues[currentTick] < slowSMAValues[currentTick] && slowSMAValues[currentTick-1] < fastSMAValues[currentTick-1]){
+//            System.out.println("Time: "+currentTick+" --  Buy");
+        }else if(fastTMAValues[currentTick] < slowTMAValues[currentTick] && slowTMAValues[currentTick-1] < fastTMAValues[currentTick-1]){
             // downward trend - report sell
             write(currentTick, 'S', Trader.getTrader().trade('S'));
+//            System.out.println("Time: "+currentTick+" --  Sell");
         }else{
              // do nothing
             write(currentTick,'D',prices.GetPrice(currentTick));
+//            System.out.println("Time: "+currentTick+" --  Nothing");
         }
     }
     
@@ -233,4 +237,31 @@ public class TMAStrategy extends AStrategy implements Runnable
     {
         return slowTMAValues[t];
     }
+    
+
+/*	public void test() {
+		double[] ps = { 61.590, 61.440, 61.320, 61.670, 61.920, 62.610, 62.880,
+				63.060, 63.290, 63.320, 63.260, 63.120, 62.240, 62.190, 62.890 };
+		this.currentTick = 0;
+		for (double d : ps) {
+			prices.SetPrice(this.currentTick, (float) d);
+			runStrategy();
+			System.out.println(fastTMAValues[currentTick]+" --- "+slowTMAValues[currentTick]);
+			++currentTick;
+		}
+		for (int i = 0; i < ps.length; i++) {
+			System.out.print(fastTMAValues[i]+" - ");
+		}
+		System.out.println();
+		for (int i = 0; i < ps.length; i++) {
+			System.out.print(slowTMAValues[i]+" - ");
+		}
+	}
+
+	public static void main(String[] args) {
+		Prices p = Prices.GetPrices();
+		(new TMAStrategy(p)).test();
+	}*/
+	
+	
 }
