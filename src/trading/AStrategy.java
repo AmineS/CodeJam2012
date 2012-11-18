@@ -60,4 +60,9 @@ public abstract class AStrategy implements IStrategy
     {
      // TODO Auto-generated method stub
     }
+    
+    public static float round(float x) {
+        return ((float) Math.round(x * 1000) / 1000);
+    }
+
 }

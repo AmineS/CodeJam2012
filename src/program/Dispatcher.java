@@ -34,8 +34,11 @@ public class Dispatcher implements Runnable
                 
                 nextChar = (char) pricesStream.read();                
             }
-            prices.setStop(true);
+            Trader.closeTraderConnection();
+            pricesStream.close();
+            output.close();
             pricesSocket.close();
+//            Trader.closeTraderConnection();
         }
         catch(IOException e)
         {
