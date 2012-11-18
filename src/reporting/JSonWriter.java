@@ -13,6 +13,8 @@ public class JSonWriter
     private ArrayList<Transaction> transactionList = null;
     private String email;
     
+    private String JSONOutputString = "";
+    
     /**
      * Constructor
      * @param tl - a transaction list and the destination email
@@ -37,7 +39,29 @@ public class JSonWriter
         {   
             transactionsString.append(t.toJSON());
             transactionsString.append(", ");
-        }
+        }        
+        
+        // replace last comma with [ 
+        transactionsString.setCharAt(transactionsString.length() -2 , ']');
+        
+        System.out.println("The last character is now " + transactionsString.charAt(transactionsString.length()-2));
+        
+        return transactionsString.toString();
+    }
+    
+    private String transactionsJSONString(StringBuilder transactionsString)
+    {        
+        transactionsString.append("[");
+        Transaction t = transactionList.get(0);
+        /*
+        for (Transaction t: transactionList)
+        {   
+            transactionsString.append(t.toJSON());
+            transactionsString.append(", ");
+        }*/
+        
+        transactionsString.append(t.toJSON());
+        transactionsString.append(", ");
         
         // replace last comma with [ 
         transactionsString.setCharAt(transactionsString.length() -1 , ']');
@@ -50,11 +74,13 @@ public class JSonWriter
      */
     public void generateOutput()
     {
-        String transactions = transactionsJSONString();
+	
+        String transactions = transactionsJSONString(new StringBuilder());
         String newString = "{";
         newString += "\"team\": \"Team007\",";
         newString += "\"destination\": \"" + email + "\",";
         newString += "\"transactions\": " + transactions + "}";
+        JSONOutputString = newString;
         
         try
         {
@@ -67,5 +93,10 @@ public class JSonWriter
         {
             System.out.println("Error while writing JSON output to file codejam.json");
         }
+    }
+    
+    public String getOutputString()
+    {
+    	return JSONOutputString;
     }
 }
