@@ -85,14 +85,14 @@ public class LWMAStrategy extends AStrategy implements Runnable
     	}
     }
     
-    public float[] getLWMAFastArr()
+    public float getLWMAFastValue(int t)
     {
-        return fast;
+        return fast[t];
     }
     
-    public float[] getLWMASlowArr()
+    public float getLWMASlowValue(int t)
     {
-        return slow;
+        return slow[t];
     }
 
 }

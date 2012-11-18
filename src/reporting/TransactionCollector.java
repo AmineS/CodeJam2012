@@ -2,7 +2,6 @@ package reporting;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 import scheduling.Scheduler;
 import trading.EMAStrategy;
 import trading.LWMAStrategy;
@@ -10,10 +9,13 @@ import trading.Prices;
 import trading.SMAStrategy;
 import trading.TMAStrategy;
 import reporting.Transaction;
+import java.io.FileWriter;
+import java.io.IOException;
 
 
 /**
  * Collect transactions from each strategy's buffer
+ * Also writes tick no, slow value, fast value to a file.
  * @author dbhage
  */
 public class TransactionCollector implements Runnable
@@ -25,6 +27,8 @@ public class TransactionCollector implements Runnable
     private EMAStrategy ema;
     private TMAStrategy tma;
     private Scheduler scheduler;
+    private FileWriter writerSMA, writerLWMA, writerEMA, writerTMA;
+    private String SMAFileName = "SMA.txt", LWMAFileName = "LWMA.txt", EMAFileName = "EMA.txt",  TMAFileName = "TMA.txt";
     
     /** ArrayList of Transactions */
     ArrayList<Transaction> transactionList;
@@ -44,6 +48,19 @@ public class TransactionCollector implements Runnable
         tma = t;
         transactionList = new ArrayList<Transaction>();
         scheduler = new Scheduler();
+        
+        try
+        {
+            writerSMA = new FileWriter(SMAFileName,true);
+            writerLWMA = new FileWriter(LWMAFileName,true);
+            writerEMA = new FileWriter(EMAFileName,true);
+            writerTMA = new FileWriter(TMAFileName,true);
+        }
+        catch(IOException ex)
+        {
+            System.out.println("Error while creating filewriters in TransactionCollector");
+            System.exit(-1);
+        }
     }
     
     @Override
@@ -51,16 +68,19 @@ public class TransactionCollector implements Runnable
     {
         while(!doneCollecting)
         {
-            if (SMACurrentIndex!=Prices.MAX_SECONDS)
+            if (SMACurrentIndex != Prices.MAX_SECONDS)
                 collectSMA();
-            if (LWMACurrentIndex!=Prices.MAX_SECONDS)
+            if (LWMACurrentIndex != Prices.MAX_SECONDS)
                 collectLWMA();
-            if (EMACurrentIndex!=Prices.MAX_SECONDS)
+            if (EMACurrentIndex != Prices.MAX_SECONDS)
                 collectEMA();
-            if (TMACurrentIndex!=Prices.MAX_SECONDS)
+            if (TMACurrentIndex != Prices.MAX_SECONDS)
                 collectTMA();
             
-            if (SMACurrentIndex == Prices.MAX_SECONDS && LWMACurrentIndex == Prices.MAX_SECONDS && EMACurrentIndex == Prices.MAX_SECONDS && TMACurrentIndex == Prices.MAX_SECONDS)
+            if (SMACurrentIndex == Prices.MAX_SECONDS && 
+                    LWMACurrentIndex == Prices.MAX_SECONDS && 
+                        EMACurrentIndex == Prices.MAX_SECONDS && 
+                            TMACurrentIndex == Prices.MAX_SECONDS)
             {
                 doneCollecting = true;
             }
@@ -90,6 +110,7 @@ public class TransactionCollector implements Runnable
         else if (sma.getTypeAtTick(SMACurrentIndex)=='D')
         {
             // this tick has been taken care of but there was no transaction, so move to next
+            writerSMA.write("");
             SMACurrentIndex++;
             return;
         }
@@ -97,6 +118,7 @@ public class TransactionCollector implements Runnable
         {
             // a buy occurred at this tick
             transactionList.add(new Transaction(SMACurrentIndex, 'B', sma.getPriceAtTick(SMACurrentIndex), scheduler.getManager(SMACurrentIndex, 1), 1));
+            
             SMACurrentIndex++;
             return;
         }

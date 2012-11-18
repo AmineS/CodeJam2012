@@ -39,8 +39,10 @@ public class TMAStrategy extends AStrategy implements Runnable
        prices = priceList;
        for (int i=0;i<Prices.MAX_SECONDS;i++)
        {
-           slowTMAValues[i] = -1;
-           fastTMAValues[i] = -1;
+           slowSMAValues[i] = 0;
+           fastSMAValues[i] = 0;
+           slowTMAValues[i] = 0;
+           fastTMAValues[i] = 0;
        }
     }
     
@@ -225,13 +227,13 @@ public class TMAStrategy extends AStrategy implements Runnable
         }
     }  
     
-    public float[] getTMAFastArr()
+    public float getTMAFastValue(int t)
     {
-        return fastTMAValues;
+        return fastTMAValues[t];
     }
     
-    public float[] getTMASlowArr()
+    public float getTMASlowValue(int t)
     {
-        return slowTMAValues;
+        return slowTMAValues[t];
     }
 }

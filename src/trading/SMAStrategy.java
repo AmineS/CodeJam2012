@@ -118,13 +118,13 @@ public class SMAStrategy extends AStrategy implements Runnable
         return currentTick;
     }
     
-    public float[] getTMAFastArr()
+    public float getSMAFastValue(int t)
     {
-        return fastSMAValues;
+        return fastSMAValues[t];
     }
     
-    public float[] getTMASlowArr()
+    public float getSMASlowValue(int t)
     {
-        return slowSMAValues;
+        return slowSMAValues[t];
     }
 }

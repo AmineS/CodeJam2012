@@ -83,15 +83,14 @@ public class EMAStrategy extends AStrategy implements Runnable {
 			++curTick;
 		}
 	}
-	
 
-    public float[] getEMAFastArr()
+	public float getEMAFastValue(int t)
     {
-        return fast;
+        return fast[t];
     }
     
-    public float[] getEMASlowArr()
-    {
-        return slow;
+	public float getEMASlowValue(int t)
+	{
+        return slow[t];
     }
 }
