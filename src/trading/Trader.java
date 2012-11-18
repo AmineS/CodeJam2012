@@ -70,7 +70,23 @@ public class Trader
             e.printStackTrace();
         }
         
-    }              
+    }
+    public static void closeTraderConnection() 
+    {
+        try
+        {
+            Trader trader = Trader.getTrader();        
+            
+//            trader.transactionStream.close();
+//            trader.transactionPriceStream.close();     
+            trader.pricesSocket.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }  
+    }
+    
     public static Trader getTrader()
     {
         if(Trader.traderInstance == null) Trader.traderInstance = new Trader(); 

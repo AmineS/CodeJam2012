@@ -211,6 +211,8 @@ public class TMAStrategy extends AStrategy implements Runnable
      */
     public void crossover(boolean fastGreaterThanSlow)
     {
+        if(prices.getStop()) return;
+        
         if(fastGreaterThanSlow)
         {
             // buy
