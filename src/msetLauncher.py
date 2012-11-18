@@ -2,8 +2,8 @@ import subprocess
 from multiprocessing import Process
 import time
 
-browser = "google-chrome"
-url = "orange.mu"
+browser = "chromium-browser"
+url = "www.google.com"
 
 def main():
 	# launch ms exchange

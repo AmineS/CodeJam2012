@@ -44,8 +44,6 @@ public class JSonWriter
         // replace last comma with [ 
         transactionsString.setCharAt(transactionsString.length() -2 , ']');
         
-        System.out.println("The last character is now " + transactionsString.charAt(transactionsString.length()-2));
-        
         return transactionsString.toString();
     }
     
