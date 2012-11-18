@@ -62,13 +62,34 @@ public class EMAStrategy extends AStrategy implements Runnable {
 	}
 
 	private void detectCross(){
-		if(fast[curTick] > slow[curTick] && slow[curTick-1] > fast[curTick-1]){
+		if(fast[curTick] > slow[curTick] && slow[curTick-1] > fast[curTick-1])
+		{
 			// upward trend - report buy
-            write(curTick, 'B', Trader.getTrader().trade('B'));
-		}else if(fast[curTick] < slow[curTick] && slow[curTick-1] < fast[curTick-1]){
+		    float cp = Trader.getTrader().trade('B');
+		    if (cp < 0)
+		    {
+		        write(curTick, 'D', cp);
+		    }
+		    else
+		    {
+		        write(curTick, 'B', cp);
+		    }
+		}
+		else if(fast[curTick] < slow[curTick] && slow[curTick-1] < fast[curTick-1])
+		{
 			// downward trend - report sell
-            write(curTick, 'S', Trader.getTrader().trade('S'));
-		}else{
+            float cp = Trader.getTrader().trade('S');
+            if (cp < 0)
+            {
+                write(curTick, 'D', cp);
+            }
+            else
+            {
+                write(curTick, 'S', cp);
+            }
+		}
+		else
+		{
 			 // do nothing
             write(curTick,'D',price.GetPrice(curTick));
 		}
