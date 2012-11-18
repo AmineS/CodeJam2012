@@ -38,26 +38,6 @@ public class SMAStrategy extends AStrategy implements Runnable
         computeSlowSMA();
         computeFastSMA();
         
-       /* if(currentTick > 1)
-        {
-            boolean currentFasterThenSlower = fastSMAValues[currentTick] > slowSMAValues[currentTick];
-            if(currentFasterThenSlower != fasterThenSlower)
-            {
-                crossover(fasterThenSlower);
-                fasterThenSlower = currentFasterThenSlower;
-            }
-            else
-            {
-                // do nothing
-                //write(currentTick,'D',price.GetPrice(currentTick));
-            	System.out.println("Time: "+currentTick+" --  Nothing");
-            }
-        }
-        else
-        {
-            fasterThenSlower = fastSMAValues[currentTick] > slowSMAValues[currentTick];
-        }*/
-        
         detectCross();
         
         ++currentTick;
@@ -83,13 +63,34 @@ public class SMAStrategy extends AStrategy implements Runnable
     }
     
 	private void detectCross(){
-		if(fastSMAValues[currentTick] > slowSMAValues[currentTick] && slowSMAValues[currentTick-1] > fastSMAValues[currentTick-1]){
+		if(fastSMAValues[currentTick] > slowSMAValues[currentTick] && slowSMAValues[currentTick-1] > fastSMAValues[currentTick-1])
+		{
 			// upward trend - report buy
-            write(currentTick, 'B', Trader.getTrader().trade('B'));
-		}else if(fastSMAValues[currentTick] < slowSMAValues[currentTick] && slowSMAValues[currentTick-1] < fastSMAValues[currentTick-1]){
+		    float cp = Trader.getTrader().trade('B');
+		    if (cp < 0)
+		    {
+		        write(currentTick, 'D', cp);
+		    }
+		    else
+		    {
+		        write(currentTick, 'B', cp);
+		    }
+		}
+		else if(fastSMAValues[currentTick] < slowSMAValues[currentTick] && slowSMAValues[currentTick-1] < fastSMAValues[currentTick-1])
+		{
 			// downward trend - report sell
-            write(currentTick, 'S', Trader.getTrader().trade('S'));
-		}else{
+            float cp = Trader.getTrader().trade('S');
+            if (cp < 0)
+            {
+                write(currentTick, 'D', cp);
+            }
+            else
+            {
+                write(currentTick, 'S', cp);
+            }
+		}
+		else
+		{
 			 // do nothing
             write(currentTick,'D',price.GetPrice(currentTick));
 		}
@@ -111,21 +112,6 @@ public class SMAStrategy extends AStrategy implements Runnable
         else
         {
             fastSMAValues[currentTick] = fastSMAValues[currentTick - 1]  + (price.GetPrice(currentTick) - price.GetPrice(currentTick - FAST_N)) / FAST_N;
-        }
-    }
-    
-    @Override
-    public void crossover(boolean FastGreaterThanSlow)
-    {
-        if(!FastGreaterThanSlow)
-        {
-            // buy
-            write(currentTick, 'B', Trader.getTrader().trade('B'));            
-        }
-        else
-        {
-            // sell
-            write(currentTick, 'S', Trader.getTrader().trade('S')); 
         }
     }
         

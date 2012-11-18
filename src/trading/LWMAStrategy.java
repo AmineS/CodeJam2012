@@ -26,10 +26,8 @@ public class LWMAStrategy extends AStrategy implements Runnable {
 			// increment tick
 			tick++;
 		}
-
 	}
 
-	
     @Override
     public void runStrategy()
     {
@@ -67,15 +65,34 @@ public class LWMAStrategy extends AStrategy implements Runnable {
     public void crossover(boolean _)
     {
     	if (tick > 0){
-    		if ((slow[tick - 1] > fast[tick - 1]) && (slow[tick] < fast[tick])){
+    		if ((slow[tick - 1] > fast[tick - 1]) && (slow[tick] < fast[tick]))
+    		{
      			// buy
-     	    	write(tick, 'B', Trader.getTrader().trade('B'));
+    		    float cp = Trader.getTrader().trade('B');
+    		    if (cp < 0)
+    		    {
+    		        write(tick, 'D', cp);
+    		    }
+    		    else
+    		    {
+    		        write(tick, 'B', cp);            
+    		    }
      		}
-     		else if ((slow[tick - 1] < fast[tick - 1]) && (slow[tick] > fast[tick])){
+     		else if ((slow[tick - 1] < fast[tick - 1]) && (slow[tick] > fast[tick]))
+     		{
      			// sell
-     	    	write(tick, 'S', Trader.getTrader().trade('S'));
+                float cp = Trader.getTrader().trade('S');
+                if (cp < 0)
+                {
+                    write(tick, 'D', cp);
+                }
+                else
+                {
+                    write(tick, 'S', cp);            
+                }
      		}
-     		else {
+     		else 
+     		{
      			// do nothing
      			write(tick, 'D', prices.GetPrice(tick));
      		}

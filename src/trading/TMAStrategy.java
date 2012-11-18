@@ -190,41 +190,39 @@ public class TMAStrategy extends AStrategy implements Runnable
     {
         return currentTick;
     }
-
-    /**
-     * Check for crossover
-     * @return 'B' for buy, 'S' for sell, 'D' for do nothing
-     */
-    public void crossover(boolean fastGreaterThanSlow)
-    {
-        //if(prices.getStop()) return;
-        
-        if(fastGreaterThanSlow)
-        {
-            // buy
-            write(currentTick, 'B', Trader.getTrader().trade('B'));            
-        }
-        else
-        {
-            // sell
-            write(currentTick, 'S', Trader.getTrader().trade('S')); 
-        }
-    }  
     
     private void detectCross(){
 
-        if(fastTMAValues[currentTick] > slowTMAValues[currentTick] && slowTMAValues[currentTick-1] > fastTMAValues[currentTick-1]){
+        if(fastTMAValues[currentTick] > slowTMAValues[currentTick] && slowTMAValues[currentTick-1] > fastTMAValues[currentTick-1])
+        {
             // upward trend - report buy
-            write(currentTick, 'B', Trader.getTrader().trade('B'));
-//            System.out.println("Time: "+currentTick+" --  Buy");
-        }else if(fastTMAValues[currentTick] < slowTMAValues[currentTick] && slowTMAValues[currentTick-1] < fastTMAValues[currentTick-1]){
+            float cp = Trader.getTrader().trade('B');
+            if (cp < 0)
+            {
+                write(currentTick, 'D', cp);
+            }
+            else
+            {
+                write(currentTick, 'B', cp);
+            }
+        }
+        else if(fastTMAValues[currentTick] < slowTMAValues[currentTick] && slowTMAValues[currentTick-1] < fastTMAValues[currentTick-1])
+        {
             // downward trend - report sell
-            write(currentTick, 'S', Trader.getTrader().trade('S'));
-//            System.out.println("Time: "+currentTick+" --  Sell");
-        }else{
+            float cp = Trader.getTrader().trade('S');
+            if (cp < 0)
+            {
+                write(currentTick, 'D', cp);
+            }
+            else
+            {
+                write(currentTick, 'S', cp);
+            }
+        }
+        else
+        {
              // do nothing
             write(currentTick,'D',prices.GetPrice(currentTick));
-//            System.out.println("Time: "+currentTick+" --  Nothing");
         }
     }
     
