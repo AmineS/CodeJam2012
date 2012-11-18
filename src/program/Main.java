@@ -29,12 +29,12 @@ public class Main
         
         // launch Strategies
 
-         smaThread = new Thread(new SMAStrategy(prices));
+//         smaThread = new Thread(new SMAStrategy(prices));
          tmaThread = new Thread(new TMAStrategy(prices));
 //         emaThread = new Thread(new EMAStrategy(prices));
 //          lwmaThread = new Thread(new LWMAStrategy(prices));
        
-         smaThread.start();
+//         smaThread.start();
          tmaThread.start(); 
 //         emaThread.start();
 //         lwmaThread.start();
@@ -48,6 +48,19 @@ public class Main
         // launch Dispatcher 
         dispatcherThread = new Thread(new Dispatcher(PricesPort));
         dispatcherThread.start();
+        
+        
+        try
+        {
+            dispatcherThread.join();
+            tmaThread.join();
+        } catch (InterruptedException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        System.out.println("Woa");
         
         
         /*** TO DELETE

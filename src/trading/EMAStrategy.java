@@ -55,6 +55,10 @@ public class EMAStrategy extends AStrategy implements Runnable {
 	public int getTick() {
 		return curTick;
 	}
+	
+	public static float round(float x) {
+		return ((float) Math.round(x * 1000) / 1000);
+	}
 		
 	private void detectCross(){
 		if(fast[curTick] > slow[curTick] && slow[curTick-1] > fast[curTick-1]){
@@ -70,10 +74,6 @@ public class EMAStrategy extends AStrategy implements Runnable {
 //            write(curTick,'D',price.GetPrice(curTick));
             System.out.println("Time: "+curTick+" --  Nothing");
 		}
-	}
-
-	public static float round(float x) {
-		return ((float) Math.round(x * 1000) / 1000);
 	}
 
 	public void run() {
@@ -108,4 +108,14 @@ public class EMAStrategy extends AStrategy implements Runnable {
 	}*/
 	
 
+
+	public float getEMAFastValue(int t)
+    {
+        return fast[t];
+    }
+    
+	public float getEMASlowValue(int t)
+	{
+        return slow[t];
+    }
 }

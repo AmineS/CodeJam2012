@@ -5,8 +5,8 @@ public class SMAStrategy extends AStrategy implements Runnable
     private int currentTick;
     private boolean fasterThenSlower;
     private Prices price;
-    public static float[] slowSMAValues;
-    public static float[] fastSMAValues;
+    private float[] slowSMAValues;
+    private float[] fastSMAValues;
     private final int FAST_N = 5;
     private final int SLOW_N = 20;
 
@@ -122,14 +122,12 @@ public class SMAStrategy extends AStrategy implements Runnable
         if(!FastGreaterThanSlow)
         {
             // buy
-            //write(currentTick, 'B', Trader.getTrader().trade('B'));         
-        	System.out.println("Time: "+currentTick+" --  Buy");
+//            write(currentTick, 'B', Trader.getTrader().trade('B'));            
         }
         else
         {
             // sell
-            //write(currentTick, 'S', Trader.getTrader().trade('S')); 
-        	System.out.println("Time: "+currentTick+" --  Sell");
+//            write(currentTick, 'S', Trader.getTrader().trade('S')); 
         }
     }
         
@@ -139,14 +137,14 @@ public class SMAStrategy extends AStrategy implements Runnable
         return currentTick;
     }
     
-    public static float[] getSlow()
+    public float getSMAFastValue(int t)
     {
-        return slowSMAValues;
+        return fastSMAValues[t];
     }
     
-    public static float[] getFast()
+    public float getSMASlowValue(int t)
     {
-        return fastSMAValues;
+        return slowSMAValues[t];
     }
     
 /*    public void test() {

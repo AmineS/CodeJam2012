@@ -39,8 +39,10 @@ public class TMAStrategy extends AStrategy implements Runnable
        prices = priceList;
        for (int i=0;i<Prices.MAX_SECONDS;i++)
        {
-           slowTMAValues[i] = -1;
-           fastTMAValues[i] = -1;
+           slowSMAValues[i] = 0;
+           fastSMAValues[i] = 0;
+           slowTMAValues[i] = 0;
+           fastTMAValues[i] = 0;
        }
     }
     
@@ -211,6 +213,8 @@ public class TMAStrategy extends AStrategy implements Runnable
      */
     public void crossover(boolean fastGreaterThanSlow)
     {
+        if(prices.getStop()) return;
+        
         if(fastGreaterThanSlow)
         {
             // buy
@@ -222,4 +226,14 @@ public class TMAStrategy extends AStrategy implements Runnable
             write(currentTick, 'S', Trader.getTrader().trade('S')); 
         }
     }  
+    
+    public float getTMAFastValue(int t)
+    {
+        return fastTMAValues[t];
+    }
+    
+    public float getTMASlowValue(int t)
+    {
+        return slowTMAValues[t];
+    }
 }
