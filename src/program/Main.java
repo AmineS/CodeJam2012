@@ -34,11 +34,6 @@ public class Main
         // launch Strategies
 
         SMAStrategy sma = new SMAStrategy(prices);
-
-
-
-
-
         EMAStrategy ema = new EMAStrategy(prices);
         LWMAStrategy lwma = new LWMAStrategy(prices);
         TMAStrategy tma = new TMAStrategy(prices);
@@ -53,22 +48,9 @@ public class Main
          emaThread.start();
          tmaThread.start(); 
         
-         TransactionCollector tcSMA,tcEMA, tcLWMA, tcTMA;
-         
-         tcSMA = new TransactionCollector(sma);
-         tcEMA = new TransactionCollector(ema);
-         tcLWMA = new TransactionCollector(lwma);
-         tcTMA = new TransactionCollector(tma);
-
-         Thread threadtcSMA = new Thread(tcSMA);
-         Thread threadtcEMA = new Thread(tcEMA);
-         Thread threadtcLWMA = new Thread(tcLWMA);
-         Thread threadtcTMA = new Thread(tcTMA);
-         
-         threadtcSMA.start();
-         threadtcTMA.start();
-         threadtcEMA.start();
-         threadtcLWMA.start();
+         TransactionCollector tc = new TransactionCollector(sma, lwma, ema, tma);
+         tcThread = new Thread(tc);
+         tcThread.start();
          
          // launch Dispatcher 
          dispatcherThread = new Thread(new Dispatcher(PricesPort));
@@ -80,10 +62,7 @@ public class Main
             tmaThread.join();
             emaThread.join();
             lwmaThread.join();
-            threadtcSMA.join();
-            threadtcTMA.join();
-            threadtcEMA.join();
-            threadtcLWMA.join();
+            tcThread.join();
             dispatcherThread.join();
         } catch (InterruptedException e)
         {

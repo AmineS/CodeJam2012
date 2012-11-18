@@ -22,7 +22,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
 	}
 	
 	public void run(){
-    	while (tick < 32400){
+    	while (tick < SIZE){
     		runStrategy();
     		crossover(true);
         	// increment tick
@@ -85,6 +85,10 @@ public class LWMAStrategy extends AStrategy implements Runnable
      			// do nothing
      			write(tick, 'D', prices.GetPrice(tick));
      		}
+    	}
+    	else
+    	{
+    		write(tick, 'D', prices.GetPrice(tick));
     	}
     }
     

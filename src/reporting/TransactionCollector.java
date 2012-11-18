@@ -75,21 +75,21 @@ public class TransactionCollector implements Runnable
             }
             if (LWMACurrentIndex < Prices.MAX_SECONDS)
             {
-                //collectLWMA();
+                collectLWMA();
             }
             if (EMACurrentIndex < Prices.MAX_SECONDS)
             {
-                //collectEMA();
+                collectEMA();
             }
             if (TMACurrentIndex < Prices.MAX_SECONDS)
             {
-                //collectTMA();
+                collectTMA();
             }
             
-            if (SMACurrentIndex == Prices.MAX_SECONDS) /* && 
+            if (SMACurrentIndex == Prices.MAX_SECONDS  && 
                     LWMACurrentIndex == Prices.MAX_SECONDS && 
                         EMACurrentIndex == Prices.MAX_SECONDS && 
-                            TMACurrentIndex == Prices.MAX_SECONDS)*/
+                            TMACurrentIndex == Prices.MAX_SECONDS)
             {
                 doneCollecting = true;
             }
@@ -124,14 +124,14 @@ public class TransactionCollector implements Runnable
     public void collectSMA()
     {
         
-        if (AStrategy.typeWriteArray[SMACurrentIndex]=='N')
+        if (sma.getTypeAtTick(SMACurrentIndex)=='N')
         {
             
             // this tick has not been taken care of yet, so do nothing.
             
             return;
         }
-        else if (AStrategy.typeWriteArray[SMACurrentIndex]=='D')
+        else if (sma.getTypeAtTick(SMACurrentIndex)=='D')
         {
             // this tick has been taken care of but there was no transaction, so move to next
             try
@@ -147,7 +147,7 @@ public class TransactionCollector implements Runnable
             SMACurrentIndex++;
             return;
         }
-        else if (AStrategy.typeWriteArray[SMACurrentIndex]=='B')
+        else if (sma.getTypeAtTick(SMACurrentIndex)=='B')
         {
             // a buy occurred at this tick
             transactionList.add(new Transaction(SMACurrentIndex, 'B', sma.getPriceAtTick(SMACurrentIndex), scheduler.getManager(SMACurrentIndex, 1), 1));
@@ -164,7 +164,7 @@ public class TransactionCollector implements Runnable
             SMACurrentIndex++;
             return;
         }
-        else if (AStrategy.typeWriteArray[SMACurrentIndex]=='S')
+        else if (sma.getTypeAtTick(SMACurrentIndex)=='S')
         {
             // a sell occurred at this tick
             transactionList.add(new Transaction(SMACurrentIndex, 'S', sma.getPriceAtTick(SMACurrentIndex), scheduler.getManager(SMACurrentIndex, 1), 1));
