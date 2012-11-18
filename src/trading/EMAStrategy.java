@@ -10,14 +10,16 @@ public class EMAStrategy extends AStrategy implements Runnable {
 	private int slowN = 20, fastN = 5;
 	private float[] slow;
 	private float[] fast;
+	private String id;
 	private Prices price;
 
 	public EMAStrategy(Prices prices) {
-	    super();
 		curTick = 0;
 		slow = init();
 		fast = init();
+		id = "EMA";
 		this.price = prices;
+
 	}
 
 	private float[] init() {
@@ -33,13 +35,13 @@ public class EMAStrategy extends AStrategy implements Runnable {
 		if (curTick == 0) {
 			slow[curTick] = price.GetPrice(curTick);
 			fast[curTick] = slow[curTick];
-			++curTick;
+			write(curTick, 'D', price.GetPrice(curTick));
 			return;
 		}
 		slow[curTick] = compute(slowN);
 		fast[curTick] = compute(fastN);
 		detectCross();
-		++curTick;
+
 	}
 
 	private float compute(int N) {
@@ -54,30 +56,32 @@ public class EMAStrategy extends AStrategy implements Runnable {
 	public int getTick() {
 		return curTick;
 	}
-		
-    private void detectCross(){
-        if(fast[curTick] > slow[curTick] && slow[curTick-1] > fast[curTick-1]){
-            // upward trend - report buy
+
+	public static float round(double x) {
+		return ((float) Math.round(((float)x) * 1000) / 1000);
+	}
+
+	private void detectCross(){
+		if(fast[curTick] > slow[curTick] && slow[curTick-1] > fast[curTick-1]){
+			// upward trend - report buy
             write(curTick, 'B', Trader.getTrader().trade('B'));
-            //System.out.println("EMA Buy");
-        }else if(fast[curTick] < slow[curTick] && slow[curTick-1] < fast[curTick-1]){
-            // downward trend - report sell
+		}else if(fast[curTick] < slow[curTick] && slow[curTick-1] < fast[curTick-1]){
+			// downward trend - report sell
             write(curTick, 'S', Trader.getTrader().trade('S'));
-            //System.out.println("EMA Sale");
-        }else{
-             // do nothing
+		}else{
+			 // do nothing
             write(curTick,'D',price.GetPrice(curTick));
-            //System.out.println("EMA D");
-        }
-    }
+		}
+	}
 
 	public void run() {
 		while (curTick != Prices.MAX_SECONDS) {
 			runStrategy();
+			++curTick;
 		}
 	}
-	
-/*	public void test() {
+/*
+	public void test() {
 		double[] ps = { 61.590, 61.440, 61.320, 61.670, 61.920, 62.610, 62.880,
 				63.060, 63.290, 63.320, 63.260, 63.120, 62.240, 62.190, 62.890 };
 		this.curTick = 0;
@@ -100,7 +104,7 @@ public class EMAStrategy extends AStrategy implements Runnable {
 		Prices p = Prices.GetPrices();
 		(new EMAStrategy(p)).test();
 	}*/
-	
+
 
 
 	public float getEMAFastValue(int t)

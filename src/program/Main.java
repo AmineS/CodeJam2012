@@ -33,16 +33,15 @@ public class Main
         
         // launch Strategies
 
-
-        TMAStrategy tma = new TMAStrategy(prices);
+        SMAStrategy sma = new SMAStrategy(prices);
         EMAStrategy ema = new EMAStrategy(prices);
         LWMAStrategy lwma = new LWMAStrategy(prices);
-        SMAStrategy sma = new SMAStrategy(prices);
+        TMAStrategy tma = new TMAStrategy(prices);
         
          smaThread = new Thread(sma);
-         tmaThread = new Thread(tma);
          emaThread = new Thread(ema);
          lwmaThread = new Thread(lwma);
+         tmaThread = new Thread(tma);
        
          smaThread.start();
          lwmaThread.start();
@@ -56,9 +55,29 @@ public class Main
          // launch Dispatcher 
          dispatcherThread = new Thread(new Dispatcher(PricesPort));
          dispatcherThread.start();
- 
+         
+        try
+        {
+            smaThread.join();
+            tmaThread.join();
+            emaThread.join();
+            lwmaThread.join();
+            tcThread.join();
+            dispatcherThread.join();
+        } catch (InterruptedException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        /*
+        for (int i=0;i<32400;i++)
+        {
+            System.out.println(tc.getTransactionList().get(i).getTransactionAsStrArray()[0]);
+        }
+        */
+        
         // launch JSON Writer
-         /*
          try
          {
              JSonWriter jsw = new JSonWriter(tc.getTransactionList(), "neerav789@gmail.com");
@@ -67,39 +86,14 @@ public class Main
          catch(JSONException ex)
          {
              ex.printStackTrace();
-         }*/
+         }
          
         // launch GUI 
         
         // launch Exchange Server 
-        
-        // launch Dispatcher 
-        Dispatcher dispatcher = new Dispatcher(PricesPort);
-/*        
-        dispatcher.addThread(smaThread);
-        dispatcher.addThread(tmaThread);
-        dispatcher.addThread(emaThread);
-        dispatcher.addThread(lwmaThread);*/
-        
-        dispatcherThread = new Thread(dispatcher);
-        dispatcherThread.start();
-
-        try
-        {
-            dispatcherThread.join();
-            lwmaThread.join();
-            emaThread.join();
-            smaThread.join();
-            tmaThread.join();
-            tcThread.join();
-        } catch (InterruptedException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
-        Trader.closeTraderConnection();
         System.out.println("Woa");
+        
+
         
         
         /*** TO DELETE

@@ -1,0 +1,93 @@
+<html>
+ <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Flot Examples</title>
+    <link href="../CSS/layout.css" rel="stylesheet" type="text/css"></link>
+    <link href="../../css/jquery-ui.css" type="text/css" rel="stylesheet" />
+    <!--[if IE]><script language="javascript" type="text/javascript" src="../../excanvas.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="../../jquery.js"></script>
+    <script language="javascript" text="text/javaScript" src="../../jquery-ui.js"></script>
+    <script language="javascript" type="text/javascript" src="../JS/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" src="../JS/jquery.flot.debug.js"></script>
+    <script language="javascript" type="text/javascript" src="../JS/jquery.flot.highlighter.js"></script>
+    <script language="javascript" type="text/javascript" src="../JS/jquery.flot.gantt.js"></script>
+</head>
+    <body>
+    <h1>Managers Optimal Schedule</h1>
+   <div id="tabs">
+
+	<div id="simple">
+     <div id="placeholder" style="width:1000px;height:700px;"></div>
+	</div>
+   </div>
+<script id="source" language="javascript" type="text/javascript">
+$(function () {
+    var d1 = [[Date.UTC(2010,0, 1,9,0),1,Date.UTC(2010,0, 1,11,0)]
+			 ,[Date.UTC(2010,0, 1,9,0),2,Date.UTC(2010,0, 1,11,0)]
+       ,[Date.UTC(2010,0, 1,11,30),1,Date.UTC(2010,0, 1,13,30)]
+       ,[Date.UTC(2010,0, 1,11,30),2,Date.UTC(2010,0, 1,13,30)]
+       ,[Date.UTC(2010,0, 1,11,0),3,Date.UTC(2010,0, 1,13,0)]
+       ,[Date.UTC(2010,0, 1,11,0),4,Date.UTC(2010,0, 1,13,0)]
+       ,[Date.UTC(2010,0, 1,13,30),3,Date.UTC(2010,0, 1,15,30)]
+       ,[Date.UTC(2010,0, 1,13,30),4,Date.UTC(2010,0, 1,15,30)]
+       ,[Date.UTC(2010,0, 1,15,0),5,Date.UTC(2010,0, 1,17,0)]
+       ,[Date.UTC(2010,0, 1,15,30),6,Date.UTC(2010,0, 1,17,30)]
+       ,[Date.UTC(2010,0, 1,17,0),7,Date.UTC(2010,0, 1,18,0)]
+       ,[Date.UTC(2010,0, 1,17,30),5,Date.UTC(2010,0, 1,18,0)]
+	         ];
+	var d2 = [
+        [Date.UTC(2010,0, 1,11,0),1,Date.UTC(2010,0, 1,11,30)]
+        ,[Date.UTC(2010,0, 1,11,0),2,Date.UTC(2010,0, 1,11,30)]
+        ,[Date.UTC(2010,0, 1,13,0),3,Date.UTC(2010,0, 1,13,30)]
+        ,[Date.UTC(2010,0, 1,13,0),4,Date.UTC(2010,0, 1,13,30)]
+        ,[Date.UTC(2010,0, 1,17,0),5,Date.UTC(2010,0, 1,17,30)]
+			 ];
+	var options = { series: { gantt: { active: true, show: true, barHeight: .5 } }
+				   ,xaxis:  { min: Date.UTC(2010,0, 1,8,45), max: Date.UTC(2010,0,1,18,15), mode: "time" }
+				   ,yaxis:  { min: 0.5, max: 7.5, ticks: [ [1,"Manager 1"], [2,"Manager 2"], [3,"Manager 3"], [4,"Manager 4"], [5,"Manager 5"], [6, "Manager 6"], [7, "Manager 7"]]}
+				   ,grid:   { hoverable: true, clickable: true}
+   				  };
+   $.plot($("#placeholder"), [ { label: "Work", data: d1 }
+                             , { label: "Break", data: d2 }
+							 ], options);
+   $.plot($("#placeholderconnect"), [ { label: "Tea", data: d1, gantt: { connectSteps: { show: true, color: "rgb(128,128,0)" } } }
+                                    , { label: "Coffee", data: d2, gantt: { connectSteps: { show: true, color: "rgb(0,255,0)" } } }
+							        ], options);
+   $.plot($("#placeholderfnc"), [ { label: "Tea", data: d1, gantt: { connectSteps: { show: true }, drawstep: drawStepWithColor } }
+                                    , { label: "Coffee", data: d2, gantt: { connectSteps: { show: true, color: "rgb(0,255,0)" } } }
+   						        ], options);
+   function drawStepWithColor(ctx,series,data,x,y,x2,color, isHighlight)
+   {	ctx.beginPath();
+   		ctx.lineWidth = series.gantt.barheight;
+   		ctx.strokeStyle = data[4];
+   		ctx.moveTo(x, y);
+   		ctx.lineTo(x2, y);
+   		ctx.stroke();
+	}
+	function showTooltip(x, y, contents)
+	{	$('<div id="tooltip">' + contents + '</div>').css(
+		{	position: 'absolute',display: 'none',top: y + 5,left: x + 5,
+            border: '1px solid #fdd',padding: '2px','background-color': '#fee',opacity: 0.80
+        }).appendTo("body").fadeIn(200);
+    }
+    var previousPoint = null;
+    $("#placeholderfnc").bind("plothover", function (event, pos, item)
+	{	if (item)
+		{	if (previousPoint != item.datapoint)
+			{	previousPoint = item.datapoint;
+				$("#tooltip").remove();
+				showTooltip(pos.pageX, pos.pageY,
+               	item.series.label + "(" + item.datapoint[3] + ")");
+         	}
+     	}
+        else
+		{	$("#tooltip").remove();
+            previousPoint = null;
+        }
+    });
+});
+  $(document).ready(function(){ $("#tabs").tabs(); });
+</script>
+
+	</body>
+</html>

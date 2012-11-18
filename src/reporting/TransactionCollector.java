@@ -3,7 +3,7 @@ package reporting;
 import java.util.ArrayList;
 import java.util.Collections;
 import scheduling.Scheduler;
-
+import trading.AStrategy;
 import trading.EMAStrategy;
 import trading.LWMAStrategy;
 import trading.Prices;
@@ -12,6 +12,7 @@ import trading.TMAStrategy;
 import reporting.Transaction;
 import java.io.FileWriter;
 import java.io.IOException;
+
 
 /**
  * Collect transactions from each strategy's buffer
@@ -52,13 +53,9 @@ public class TransactionCollector implements Runnable
         try
         {
             writerSMA = new FileWriter(SMAFileName,true);
-            writerSMA.write("");
             writerLWMA = new FileWriter(LWMAFileName,true);
-            writerLWMA.write("");
             writerEMA = new FileWriter(EMAFileName,true);
-            writerEMA.write("");
             writerTMA = new FileWriter(TMAFileName,true);
-            writerTMA.write("");
         }
         catch(IOException ex)
         {
@@ -126,9 +123,12 @@ public class TransactionCollector implements Runnable
      */
     public void collectSMA()
     {
+        
         if (sma.getTypeAtTick(SMACurrentIndex)=='N')
         {
+            
             // this tick has not been taken care of yet, so do nothing.
+            
             return;
         }
         else if (sma.getTypeAtTick(SMACurrentIndex)=='D')
