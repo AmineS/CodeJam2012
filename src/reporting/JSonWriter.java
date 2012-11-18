@@ -44,10 +44,12 @@ public class JSonWriter
         {   
             transactionsString.append(t.toJSON());
             transactionsString.append(", ");
-        }
+        }        
         
         // replace last comma with [ 
-        transactionsString.setCharAt(transactionsString.length() -1 , ']');
+        transactionsString.setCharAt(transactionsString.length() -2 , ']');
+        
+        System.out.println("The last character is now " + transactionsString.charAt(transactionsString.length()-2));
         
         return transactionsString.toString();
     }
@@ -55,12 +57,16 @@ public class JSonWriter
     private String transactionsJSONString(StringBuilder transactionsString)
     {        
         transactionsString.append("[");
-        
+        Transaction t = transactionList.get(0);
+        /*
         for (Transaction t: transactionList)
         {   
             transactionsString.append(t.toJSON());
             transactionsString.append(", ");
-        }
+        }*/
+        
+        transactionsString.append(t.toJSON());
+        transactionsString.append(", ");
         
         // replace last comma with [ 
         transactionsString.setCharAt(transactionsString.length() -1 , ']');
@@ -88,6 +94,8 @@ public class JSonWriter
         newString += "\"destination\": \"" + email + "\",";
         newString += "\"transactions\": " + transactions + "}";
         JSONOutputString = newString;
+        
+        //System.out.println(newString);
         try
         {
             FileWriter file = new FileWriter("codejam.json");

@@ -8,10 +8,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class ESignLive {
 	
 		public final static String requestURL = "https://stage-api.e-signlive.com/aws/rest/services/codejam";
-		
+		/* FOR DEBUG USE:
 		public static void main(String[] args){
 	    	System.out.println(SignDocument("{" +
 	        		"\"team\" : \"Flying monkeys\"," +
@@ -25,7 +28,7 @@ public class ESignLive {
 	        		"\"strategy\" : \"EMA\"" +
 	        		"}]}\""));
 		}
-		
+		*/
 		public static String SignDocument(String jsonArray) {
 			String output = null;
 			try {
@@ -59,6 +62,18 @@ public class ESignLive {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return output;
+			return output = parseJSON(output);
+		}
+
+		private static String parseJSON(String jsonString) {
+			String result = "";
+			try {
+				JSONObject json = new JSONObject(jsonString);
+		        result = json.getString("ceremonyId");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}        
+			return result;
 		}
 }
