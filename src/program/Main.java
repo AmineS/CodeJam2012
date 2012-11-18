@@ -29,15 +29,15 @@ public class Main
         
         // launch Strategies
 
-//         smaThread = new Thread(new SMAStrategy(prices));
+         smaThread = new Thread(new SMAStrategy(prices));
          tmaThread = new Thread(new TMAStrategy(prices));
-//         emaThread = new Thread(new EMAStrategy(prices));
-//          lwmaThread = new Thread(new LWMAStrategy(prices));
+         emaThread = new Thread(new EMAStrategy(prices));
+         lwmaThread = new Thread(new LWMAStrategy(prices));
        
-//         smaThread.start();
+         smaThread.start();
          tmaThread.start(); 
-//         emaThread.start();
-//         lwmaThread.start();
+         emaThread.start();
+         lwmaThread.start();
         
         // launch JSON Writer          
         
@@ -46,7 +46,14 @@ public class Main
         // launch Exchange Server 
         
         // launch Dispatcher 
-        dispatcherThread = new Thread(new Dispatcher(PricesPort));
+        Dispatcher dispatcher = new Dispatcher(PricesPort);
+/*        
+        dispatcher.addThread(smaThread);
+        dispatcher.addThread(tmaThread);
+        dispatcher.addThread(emaThread);
+        dispatcher.addThread(lwmaThread);*/
+        
+        dispatcherThread = new Thread(dispatcher);
         dispatcherThread.start();
         
         
@@ -60,6 +67,7 @@ public class Main
             e.printStackTrace();
         }
         
+        Trader.closeTraderConnection();
         System.out.println("Woa");
         
         

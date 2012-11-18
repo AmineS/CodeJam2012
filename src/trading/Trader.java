@@ -12,6 +12,7 @@ public class Trader
     BufferedReader transactionPriceStream; 
     StringBuffer priceString; 
     PrintWriter transactionStream;
+    boolean isClosed = true;
     
     /**
      * Thread safe method that initiates a buy or sell trade communication with the exchange server.
@@ -23,33 +24,40 @@ public class Trader
     public synchronized float trade(char t)
     {               
         float price = -1f;
-        if(!(t=='B' || t=='S') || Prices.GetPrices().getStop()) return -1f;                
+        if(!(t=='B' || t=='S') || Prices.GetPrices().getStop())
+        {
+            Trader.closeTraderConnection();
+            return -1f;                
+        }
         try 
         {
-            transactionStream.println(t);
-            
-            char nextChar = (char)transactionPriceStream.read();
-            if(nextChar == 'E') return -1f;
-            
-            while(nextChar != '.')
+            if(pricesSocket.isConnected())
             {
+                transactionStream.println(t);
+                
+                char nextChar = (char)transactionPriceStream.read();
+                if(nextChar == 'E') return -1f;
+                
+                while(nextChar != '.')
+                {
+                    priceString.append(nextChar);
+                    nextChar = (char)transactionPriceStream.read();                
+                }           
+                            
                 priceString.append(nextChar);
-                nextChar = (char)transactionPriceStream.read();                
-            }           
-                        
-            priceString.append(nextChar);
-            
-            // read the next three characters after the decimal
-            priceString.append((char)transactionPriceStream.read());
-            priceString.append((char)transactionPriceStream.read());
-            priceString.append((char)transactionPriceStream.read());
-            
-            price = Float.parseFloat(priceString.toString());
-            priceString.delete(0, priceString.length());        
+                
+                // read the next three characters after the decimal
+                priceString.append((char)transactionPriceStream.read());
+                priceString.append((char)transactionPriceStream.read());
+                priceString.append((char)transactionPriceStream.read());
+                
+                price = Float.parseFloat(priceString.toString());
+                priceString.delete(0, priceString.length());
+            }
         }
         catch(IOException e)
         {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         return price;
     }
@@ -63,6 +71,7 @@ public class Trader
             trader.transactionPriceStream = new BufferedReader(new InputStreamReader(trader.pricesSocket.getInputStream()));
             trader.priceString = new StringBuffer();
             trader.transactionStream = new PrintWriter(trader.pricesSocket.getOutputStream(), true);
+            trader.isClosed = false;
 
         }
         catch (IOException e)
@@ -73,13 +82,14 @@ public class Trader
     }
     public static void closeTraderConnection() 
     {
+        Trader trader = Trader.getTrader();
+        if(trader.isClosed) return;
         try
-        {
-            Trader trader = Trader.getTrader();        
-            
-//            trader.transactionStream.close();
-//            trader.transactionPriceStream.close();     
+        {                                
+            trader.transactionStream.close();
+            trader.transactionPriceStream.close();     
             trader.pricesSocket.close();
+            trader.isClosed = true;
         }
         catch (IOException e)
         {

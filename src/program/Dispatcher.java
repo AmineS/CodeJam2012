@@ -1,6 +1,8 @@
 package program;
 import java.io.*; 
 import java.net.*;
+import java.util.ArrayList;
+
 import trading.*;
 
 public class Dispatcher implements Runnable 
@@ -10,7 +12,8 @@ public class Dispatcher implements Runnable
     StringBuffer priceString; 
     PrintWriter output;
     int tick;
-        
+    ArrayList<Thread> threads;
+    
     public void run()
     {
         Prices prices = Prices.GetPrices();
@@ -34,12 +37,10 @@ public class Dispatcher implements Runnable
                 
                 nextChar = (char) pricesStream.read();                
             }
-            Trader.closeTraderConnection();
             prices.setStop(true);
             pricesStream.close();
             output.close();
             pricesSocket.close();
-//            Trader.closeTraderConnection();
         }
         catch(IOException e)
         {
@@ -53,6 +54,12 @@ public class Dispatcher implements Runnable
          prices.printPrices();*/
         /******/
     }
+    
+    public void addThread(Thread t)
+    {
+        threads.add(t);
+    }
+    
 
     // opens a socket with the given port number 
     public Dispatcher(int port)
@@ -64,6 +71,7 @@ public class Dispatcher implements Runnable
             priceString = new StringBuffer();
             output = new PrintWriter(pricesSocket.getOutputStream(), true);
             tick = 0;
+            threads = new ArrayList<Thread>();
         }
         catch(UnknownHostException unknownHost)
         {
