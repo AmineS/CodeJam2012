@@ -2,12 +2,14 @@ package reporting;
 
 import java.io.*;
 
+
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.*;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.*;
 import org.apache.http.entity.*;
-
+import org.apache.http.entity.ByteArrayEntity;
 
 public class ESignLive
 {
@@ -47,11 +49,15 @@ public class ESignLive
     {
     	String ceremonyID = "{}"; 
         HttpClient httpClient = new DefaultHttpClient();
+        httpClient.getParams().setParameter("http.protocol.version", HttpVersion.HTTP_1_0);
+        
         try
         {
+            
             HttpPost postRequest = new HttpPost(url);
             postRequest.addHeader("Authorization", "Basic " + apiKey);
-            StringEntity input = new StringEntity(document);
+//            StringEntity input = new StringEntity(document);
+            ByteArrayEntity input = new ByteArrayEntity(document.getBytes());
             input.setContentType("application/json");
             
             postRequest.setEntity(input);
