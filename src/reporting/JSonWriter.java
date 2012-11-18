@@ -37,15 +37,21 @@ public class JSonWriter
     {
         JSONObject tList = new JSONObject();
         String[] tString;
+        StringBuilder transaction = new StringBuilder();
         JSONArray arr = new JSONArray();
+        transaction.append("[");
         
         for (Transaction t: transactionList)
         {   
-            tString = t.getTransactionAsStrArray(); 
+            transaction.append(t.toJSON());
+            transaction.append(',');
+            
+            
+/*            tString = t.getTransactionAsStrArray(); 
             for (int i=0;i<tString.length;i++)
             {
                 //arr.put(labels[i], tString[i]);
-            }
+            }*/
         }
         
         jsonObj.put("transactions", tList);
