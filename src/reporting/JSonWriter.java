@@ -28,6 +28,7 @@ public class JSonWriter
     /**
      * Makes a string from all transactions
      * @return transactions as a string in JSON format
+     * @throws InterruptedException 
      */
     private String transactionsJSONString()
     {
@@ -44,28 +45,6 @@ public class JSonWriter
         // replace last comma with [ 
         transactionsString.setCharAt(transactionsString.length() -2 , ']');
         
-        System.out.println("The last character is now " + transactionsString.charAt(transactionsString.length()-2));
-        
-        return transactionsString.toString();
-    }
-    
-    private String transactionsJSONString(StringBuilder transactionsString)
-    {        
-        transactionsString.append("[");
-        Transaction t = transactionList.get(0);
-        /*
-        for (Transaction t: transactionList)
-        {   
-            transactionsString.append(t.toJSON());
-            transactionsString.append(", ");
-        }*/
-        
-        transactionsString.append(t.toJSON());
-        transactionsString.append(", ");
-        
-        // replace last comma with [ 
-        transactionsString.setCharAt(transactionsString.length() -1 , ']');
-        
         return transactionsString.toString();
     }
     
@@ -75,12 +54,12 @@ public class JSonWriter
     public void generateOutput()
     {
 	
-        String transactions = transactionsJSONString(new StringBuilder());
+        String transactions = transactionsJSONString();
         String newString = "{";
         newString += "\"team\": \"Team007\",";
         newString += "\"destination\": \"" + email + "\",";
         newString += "\"transactions\": " + transactions + "}";
-        JSONOutputString = newString;
+        //JSONOutputString = newString;
         
         try
         {

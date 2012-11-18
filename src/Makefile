@@ -1,6 +1,6 @@
 all:	
 	make compile
-	python run.py
+	python msetLauncher.py
 
 compile:
 	javac dispatcher/*.java reporting/*.java scheduling/*.java trading/*.java Mset.java

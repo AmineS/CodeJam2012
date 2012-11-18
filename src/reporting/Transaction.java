@@ -90,7 +90,7 @@ public class Transaction implements Comparable<Transaction>
         jsonString.append(this.manager);
         jsonString.append("\", ");
         
-        jsonString.append("\"price\": \"");
+        jsonString.append("\"strategy\": \"");
         jsonString.append(this.getStrategy());        
         jsonString.append("\"} ");   
         

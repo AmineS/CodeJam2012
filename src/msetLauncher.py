@@ -2,8 +2,8 @@ import subprocess
 from multiprocessing import Process
 import time
 
-browser = "google-chrome"
-url = "orange.mu"
+browser = "chromium-browser"
+url = "www.google.com"
 
 def main():
 	# launch ms exchange
@@ -11,16 +11,16 @@ def main():
 	msP.start()
 
 	# wait for it to get ready...
-	time.sleep(0.5)
+	time.sleep(1)
 
 	# run Mset
 	msetP = Process(target=runMSET)
-	gui = Process(target=runGUI)
+	#gui = Process(target=runGUI)
 	msetP.start()
-	gui.start()
+	#gui.start()
 
 	msetP.join()
-	gui.join()
+	#gui.join()
 	msP.join()
 
 def runMSExchange():
