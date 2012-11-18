@@ -37,12 +37,6 @@ public class LWMAStrategy extends AStrategy implements Runnable
     	slow[tick] = compute(5);
     	// to calculate LWMA20
     	fast[tick] = compute(20);
-    	
-    	if (tick < 1)
-    	{
-    	    System.out.println("The LWMA5 is " + slow[tick]);
-            System.out.println("The LWMA20 is " + fast[tick]);
-    	}
     }
 	
     private float compute(int n){

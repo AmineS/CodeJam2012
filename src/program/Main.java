@@ -69,36 +69,15 @@ public class Main
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-         
-         
-         int buys=0,sells=0,d=0;
-         char[] arr = ema.getTypeArr();
-         for(int i=0; i<arr.length; i++)
-         {
-             if (arr[i]=='N')
-             {
-                 System.out.println("Error");
-                 System.exit(-1);
-             }
-             
-             if(arr[i]=='B')
-             {
-                 buys++;
-             }
-             else if(arr[i]=='S')
-             {
-                 sells++;
-             }
-             else if(arr[i]=='D')
-             {
-                 d++;
-             }
-         }
-         System.out.println("Buys:" + buys + "\nSells:" + sells + "\ndonothings:" + d);
-         
-         
+
+        /*
+        for (int i=0;i<32400;i++)
+        {
+            System.out.println(tc.getTransactionList().get(i).getTransactionAsStrArray()[0]);
+        }
+        */
+        
         // launch JSON Writer
-         /*
          try
          {
              JSonWriter jsw = new JSonWriter(tc.getTransactionList(), "neerav789@gmail.com");
@@ -107,7 +86,7 @@ public class Main
          catch(JSONException ex)
          {
              ex.printStackTrace();
-         }*/
+         }
          
         // launch GUI 
         
