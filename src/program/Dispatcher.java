@@ -37,6 +37,7 @@ public class Dispatcher implements Runnable
                 
                 nextChar = (char) pricesStream.read();                
             }
+            
             prices.setStop(true);
             pricesStream.close();
             output.close();

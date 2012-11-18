@@ -36,11 +36,14 @@ public class TMAStrategy extends AStrategy implements Runnable
      */
     public TMAStrategy(Prices priceList)
     {
+       super();
        prices = priceList;
        for (int i=0;i<Prices.MAX_SECONDS;i++)
        {
-           slowTMAValues[i] = -1;
-           fastTMAValues[i] = -1;
+           slowSMAValues[i] = 0;
+           fastSMAValues[i] = 0;
+           slowTMAValues[i] = 0;
+           fastTMAValues[i] = 0;
        }
     }
     
@@ -66,6 +69,7 @@ public class TMAStrategy extends AStrategy implements Runnable
         computeSlowTMA(currentTick, N_SLOW);
         computeFastTMA(currentTick, N_FAST);
 
+        /*
         if(currentTick > 1)
         {
             boolean currentFasterThenSlower = fastSMAValues[currentTick] > slowSMAValues[currentTick];
@@ -83,7 +87,9 @@ public class TMAStrategy extends AStrategy implements Runnable
         else
         {
             fasterThenSlower = fastSMAValues[currentTick] > slowSMAValues[currentTick];
-        }
+        }*/
+        
+        detectCross();
         
         ++currentTick;
     }
@@ -211,7 +217,7 @@ public class TMAStrategy extends AStrategy implements Runnable
      */
     public void crossover(boolean fastGreaterThanSlow)
     {
-        if(prices.getStop()) return;
+        //if(prices.getStop()) return;
         
         if(fastGreaterThanSlow)
         {
@@ -224,4 +230,27 @@ public class TMAStrategy extends AStrategy implements Runnable
             write(currentTick, 'S', Trader.getTrader().trade('S')); 
         }
     }  
+    
+    private void detectCross(){
+        if(fastSMAValues[currentTick] > slowSMAValues[currentTick] && slowSMAValues[currentTick-1] > fastSMAValues[currentTick-1]){
+            // upward trend - report buy
+            write(currentTick, 'B', Trader.getTrader().trade('B'));
+        }else if(fastSMAValues[currentTick] < slowSMAValues[currentTick] && slowSMAValues[currentTick-1] < fastSMAValues[currentTick-1]){
+            // downward trend - report sell
+            write(currentTick, 'S', Trader.getTrader().trade('S'));
+        }else{
+             // do nothing
+            write(currentTick,'D',prices.GetPrice(currentTick));
+        }
+    }
+    
+    public float getTMAFastValue(int t)
+    {
+        return fastTMAValues[t];
+    }
+    
+    public float getTMASlowValue(int t)
+    {
+        return slowTMAValues[t];
+    }
 }

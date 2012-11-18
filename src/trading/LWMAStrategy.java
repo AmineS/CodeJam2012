@@ -3,8 +3,8 @@ package trading;
 
 public class LWMAStrategy extends AStrategy implements Runnable
 {
-	static final int SIZE = Prices.MAX_SECONDS;
-	private static int tick = 0;
+	private final int SIZE = Prices.MAX_SECONDS;
+	private int tick = 0;
 	private int i, limit;
 	private float[] slow, fast;
 	private float sumI, sumPrices;
@@ -13,6 +13,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
 	String strategy;
 	
 	public LWMAStrategy(Prices prices) {
+	    super();
 		tick = 0;
 		slow = new float[SIZE];
 		fast = new float[SIZE];
@@ -36,10 +37,12 @@ public class LWMAStrategy extends AStrategy implements Runnable
     	slow[tick] = compute(5);
     	// to calculate LWMA20
     	fast[tick] = compute(20);
-    	/* DEBUG
-        System.out.println("The LWMA5 is " + slow[tick]);
-        System.out.println("The LWMA20 is " + fast[tick]);
-        */
+    	
+    	if (tick < 1)
+    	{
+    	    System.out.println("The LWMA5 is " + slow[tick]);
+            System.out.println("The LWMA20 is " + fast[tick]);
+    	}
     }
 	
     private float compute(int n){
@@ -57,22 +60,8 @@ public class LWMAStrategy extends AStrategy implements Runnable
 			// but to comply with the arrays, the index starts at 0
 			sumPrices += prices.GetPrice(tick - limit + i + 1) * (i + 1);
 		}
-		return (float) (Math.round(sumPrices/sumI * 1000) / 1000.0);
+		return sumPrices = (float) (Math.round(sumPrices/sumI * 1000) / 1000.0);
     }
-    
-    /*
-    private float betterCompute(int n){
-		if (tick < n){
-			numerator = (slow[tick - 1] * denominator + prices.GetPrice(tick) * tick);
-			denominator += tick;
-		}
-		else {
-			numerator = (slow[tick - 1] * denominator - prices.GetPrice(tick - n - 1) * (tick - n - 1) + prices.GetPrice(tick) * tick);
-			denominator += n;
-		}
-		return numerator / denominator;
-    }
-    */
 
     @Override
     public int getTick()
@@ -97,6 +86,16 @@ public class LWMAStrategy extends AStrategy implements Runnable
      			write(tick, 'D', prices.GetPrice(tick));
      		}
     	}
+    }
+    
+    public float getLWMAFastValue(int t)
+    {
+        return fast[t];
+    }
+    
+    public float getLWMASlowValue(int t)
+    {
+        return slow[t];
     }
 
 }
