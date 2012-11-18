@@ -1,7 +1,6 @@
 package reporting;
 
 import java.io.*;
-import java.net.*;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.*;
@@ -12,15 +11,28 @@ import org.apache.http.entity.*;
 
 public class ESignLive
 {
-    private String apiKey; 
+    private static String apiKey; 
     
     // default url 
-    private String url = "https://stage-api.e-signlive.com/aws/rest/services/codejam";   
-    private HttpURLConnection connection;
+    private static final String url = "https://stage-api.e-signlive.com/aws/rest/services/codejam";   
+    
+    public static void main(String[] args){
+    	System.out.println(SignDocument("{" +
+        		"\"team\" : \"Flying monkeys\"," +
+        		"\"destination\" : \"mcgillcodejam2012@gmail.com\"," +
+        		"\"transactions\" : [" +
+        		"{" +
+        		"\"time\" : \"8004\"," +
+        		"\"type\" : \"buy\"," +
+        		"\"price\" : 120," +
+        		"\"manager\" : \"Manager1\"," +
+        		"\"strategy\" : \"EMA\"" +
+        		"}]}\""));
+    }
     
     public ESignLive(String apiKey_)
     {
-        if(apiKey_==null)
+        if(apiKey_ == null)
         {
             // default code jam key 
             apiKey = "Y29kZWphbTpBRkxpdGw0TEEyQWQx";
@@ -31,13 +43,14 @@ public class ESignLive
         }
     }
     
-    public String SignDocument(String document)
-    {        
-        String ceremonyID = "{}"; 
+    public static String SignDocument(String document)
+    {
+    	String ceremonyID = "{}"; 
         HttpClient httpClient = new DefaultHttpClient();
         try
         {
             HttpPost postRequest = new HttpPost(url);
+            postRequest.addHeader("Authorization", "Basic " + apiKey);
             StringEntity input = new StringEntity(document);
             input.setContentType("application/json");
             
@@ -45,8 +58,7 @@ public class ESignLive
             HttpResponse response = httpClient.execute(postRequest);
             
             if (response.getStatusLine().getStatusCode() != 201) {
-                throw new RuntimeException("Failed : HTTP error code : "
-                    + response.getStatusLine().getStatusCode());
+                throw new RuntimeException("Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
             }
      
             BufferedReader reader = new BufferedReader(
