@@ -24,13 +24,17 @@ public class StreamOpener {
 		System.out.println(opener.valueAttick(1));		
 		System.out.println(opener.valueAttick(50));
 		System.out.println(opener.valueAttick(100));
+		
+		System.out.println("\n " + StreamOpener.valueAtTick("SMA.txt", 1));
+		System.out.println(StreamOpener.valueAtTick("SMA.txt", 50));
+		System.out.println(StreamOpener.valueAtTick("SMA.txt", 100));		
 	}
 	
 	public String valueAttick(int tick) {
 		String strLine = "";
 		File f = new File(fileName);
 		if (!f.exists()){
-			return "";
+			strLine =  "";
 		}
 		else{
 			try{
@@ -50,15 +54,43 @@ public class StreamOpener {
 					e.printStackTrace();
 				}
 			  }
-			  return strLine;
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			finally
-			{
-				return strLine;
+		}
+		return strLine;
+	}
+	
+	public static String valueAtTick(String file, int tick) {
+		String strLine = "";
+		File f = new File(file);
+		if (!f.exists()){
+			strLine =  "";
+		}
+		else{
+			try{
+			  FileInputStream fstream;
+			  fstream = new FileInputStream(file);	
+			  DataInputStream in = new DataInputStream(fstream);
+			  BufferedReader br = new BufferedReader(new InputStreamReader(in));			  
+			  //Read File Line By Line
+			  for(int i = 0; i < tick; i++) {
+				  try {
+					if ((strLine = br.readLine()) == null){
+						  strLine = "";
+						  break;
+					  }
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			  }
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 		}
-	}
+		return strLine;
+	}	
 }
