@@ -103,12 +103,12 @@ public class SMAStrategy extends AStrategy implements Runnable
         if(FastGreaterThanSlow)
         {
             // buy
-//            write(currentTick, 'B', Trader.getTrader().trade('B'));            
+            write(currentTick, 'B', Trader.getTrader().trade('B'));            
         }
         else
         {
             // sell
-//            write(currentTick, 'S', Trader.getTrader().trade('S')); 
+            write(currentTick, 'S', Trader.getTrader().trade('S')); 
         }
     }
         

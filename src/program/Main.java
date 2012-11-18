@@ -1,5 +1,9 @@
 package program;
 
+import org.json.JSONException;
+
+import reporting.JSonWriter;
+import reporting.TransactionCollector;
 import trading.*;
 
 public class Main
@@ -19,7 +23,7 @@ public class Main
         
         Thread dispatcherThread;
         Thread traderThread; 
-        Thread smaThread, lwmaThread, emaThread, tmaThread; 
+        Thread smaThread, lwmaThread, emaThread, tmaThread, tcThread; 
         Thread jsonWriter; 
         
         // Price array 
@@ -29,31 +33,52 @@ public class Main
         
         // launch Strategies
 
-//         smaThread = new Thread(new SMAStrategy(prices));
-         tmaThread = new Thread(new TMAStrategy(prices));
-//         emaThread = new Thread(new EMAStrategy(prices));
-//          lwmaThread = new Thread(new LWMAStrategy(prices));
+        SMAStrategy sma = new SMAStrategy(prices);
+        AStrategy tma = new TMAStrategy(prices);
+        AStrategy ema = new EMAStrategy(prices);
+        AStrategy lwma = new LWMAStrategy(prices);
+        
+         smaThread = new Thread(sma);
+//         tmaThread = new Thread((TMAStrategy)tma);
+//         emaThread = new Thread((EMAStrategy)ema);
+//         lwmaThread = new Thread((LWMAStrategy)lwma);
        
-//         smaThread.start();
-         tmaThread.start(); 
+         smaThread.start();
+//         tmaThread.start(); 
 //         emaThread.start();
 //         lwmaThread.start();
+
         
-        // launch JSON Writer          
-        
+         TransactionCollector tc = new TransactionCollector(sma, (LWMAStrategy)lwma, (EMAStrategy)ema, (TMAStrategy)tma);
+         tcThread = new Thread(tc);
+         tcThread.start();
+         // launch Dispatcher 
+         dispatcherThread = new Thread(new Dispatcher(PricesPort));
+         dispatcherThread.start();
+ 
+        // launch JSON Writer
+         try
+         {
+             JSonWriter jsw = new JSonWriter(tc.getTransactionList(), "neerav789@gmail.com");
+             jsw.generateOutput();
+         }
+         catch(JSONException ex)
+         {
+             ex.printStackTrace();
+         }
+         
         // launch GUI 
         
         // launch Exchange Server 
         
-        // launch Dispatcher 
-        dispatcherThread = new Thread(new Dispatcher(PricesPort));
-        dispatcherThread.start();
-        
-        
         try
         {
             dispatcherThread.join();
-            tmaThread.join();
+//            lwmaThread.join();
+//            emaThread.join();
+            smaThread.join();
+//            tmaThread.join();
+            tcThread.join();
         } catch (InterruptedException e)
         {
             // TODO Auto-generated catch block
