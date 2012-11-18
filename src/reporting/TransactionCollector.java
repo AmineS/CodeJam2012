@@ -3,12 +3,14 @@ package reporting;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import scheduling.Scheduler;
 import trading.EMAStrategy;
 import trading.LWMAStrategy;
 import trading.Prices;
 import trading.SMAStrategy;
 import trading.TMAStrategy;
 import reporting.Transaction;
+
 
 /**
  * Collect transactions from each strategy's buffer
@@ -22,6 +24,7 @@ public class TransactionCollector implements Runnable
     private LWMAStrategy lwma;
     private EMAStrategy ema;
     private TMAStrategy tma;
+    private Scheduler scheduler;
     
     /** ArrayList of Transactions */
     ArrayList<Transaction> transactionList;
@@ -40,6 +43,7 @@ public class TransactionCollector implements Runnable
         ema = e;
         tma = t;
         transactionList = new ArrayList<Transaction>();
+        scheduler = new Scheduler();
     }
     
     @Override
@@ -92,14 +96,14 @@ public class TransactionCollector implements Runnable
         else if (sma.getTypeAtTick(SMACurrentIndex)=='B')
         {
             // a buy occurred at this tick
-            transactionList.add(new Transaction(SMACurrentIndex, 'B', sma.getPriceAtTick(SMACurrentIndex), "", 4));
+            transactionList.add(new Transaction(SMACurrentIndex, 'B', sma.getPriceAtTick(SMACurrentIndex), scheduler.getManager(SMACurrentIndex, 1), 1));
             SMACurrentIndex++;
             return;
         }
         else if (sma.getTypeAtTick(SMACurrentIndex)=='S')
         {
             // a sell occurred at this tick
-            transactionList.add(new Transaction(SMACurrentIndex, 'S', sma.getPriceAtTick(SMACurrentIndex), "", 4));
+            transactionList.add(new Transaction(SMACurrentIndex, 'S', sma.getPriceAtTick(SMACurrentIndex), scheduler.getManager(SMACurrentIndex, 1), 1));
             SMACurrentIndex++;
             return;
         }
@@ -124,14 +128,14 @@ public class TransactionCollector implements Runnable
         else if (lwma.getTypeAtTick(LWMACurrentIndex)=='B')
         {
             // a buy occurred at this tick
-            transactionList.add(new Transaction(LWMACurrentIndex, 'B', lwma.getPriceAtTick(LWMACurrentIndex), "", 4));
+            transactionList.add(new Transaction(LWMACurrentIndex, 'B', lwma.getPriceAtTick(LWMACurrentIndex), scheduler.getManager(LWMACurrentIndex, 2), 2));
             LWMACurrentIndex++;
             return;
         }
         else if (lwma.getTypeAtTick(LWMACurrentIndex)=='S')
         {
             // a sell occurred at this tick
-            transactionList.add(new Transaction(LWMACurrentIndex, 'S', lwma.getPriceAtTick(LWMACurrentIndex), "", 4));
+            transactionList.add(new Transaction(LWMACurrentIndex, 'S', lwma.getPriceAtTick(LWMACurrentIndex), scheduler.getManager(LWMACurrentIndex, 2), 2));
             LWMACurrentIndex++;
             return;
         }
@@ -156,14 +160,14 @@ public class TransactionCollector implements Runnable
         else if (ema.getTypeAtTick(EMACurrentIndex)=='B')
         {
             // a buy occurred at this tick
-            transactionList.add(new Transaction(EMACurrentIndex, 'B', ema.getPriceAtTick(EMACurrentIndex), "", 4));
+            transactionList.add(new Transaction(EMACurrentIndex, 'B', ema.getPriceAtTick(EMACurrentIndex), scheduler.getManager(EMACurrentIndex, 3), 3));
             EMACurrentIndex++;
             return;
         }
         else if (ema.getTypeAtTick(EMACurrentIndex)=='S')
         {
             // a sell occurred at this tick
-            transactionList.add(new Transaction(EMACurrentIndex, 'S', ema.getPriceAtTick(EMACurrentIndex), "", 4));
+            transactionList.add(new Transaction(EMACurrentIndex, 'S', ema.getPriceAtTick(EMACurrentIndex), scheduler.getManager(EMACurrentIndex, 1), 3));
             EMACurrentIndex++;
             return;
         }
@@ -188,14 +192,14 @@ public class TransactionCollector implements Runnable
         else if (tma.getTypeAtTick(TMACurrentIndex)=='B')
         {
             // a buy occurred at this tick
-            transactionList.add(new Transaction(TMACurrentIndex, 'B', tma.getPriceAtTick(TMACurrentIndex), "", 4));
+            transactionList.add(new Transaction(TMACurrentIndex, 'B', tma.getPriceAtTick(TMACurrentIndex), scheduler.getManager(TMACurrentIndex, 4), 4));
             TMACurrentIndex++;
             return;
         }
         else if (tma.getTypeAtTick(TMACurrentIndex)=='S')
         {
             // a sell occurred at this tick
-            transactionList.add(new Transaction(TMACurrentIndex, 'S', tma.getPriceAtTick(TMACurrentIndex), "", 4));
+            transactionList.add(new Transaction(TMACurrentIndex, 'S', tma.getPriceAtTick(TMACurrentIndex), scheduler.getManager(TMACurrentIndex, 4), 4));
             TMACurrentIndex++;
             return;
         }

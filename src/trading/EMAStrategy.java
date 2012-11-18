@@ -77,10 +77,6 @@ public class EMAStrategy extends AStrategy implements Runnable {
 		}
 	}
 
-	public static float round(float x) {
-		return ((float) Math.round(x * 1000) / 1000);
-	}
-
 	public void run() {
 		while (curTick != Prices.MAX_SECONDS) {
 			runStrategy();
@@ -89,4 +85,13 @@ public class EMAStrategy extends AStrategy implements Runnable {
 	}
 	
 
+    public float[] getEMAFastArr()
+    {
+        return fast;
+    }
+    
+    public float[] getEMASlowArr()
+    {
+        return slow;
+    }
 }

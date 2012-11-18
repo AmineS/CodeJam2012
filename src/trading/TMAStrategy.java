@@ -222,4 +222,14 @@ public class TMAStrategy extends AStrategy implements Runnable
             write(currentTick, 'S', Trader.getTrader().trade('S')); 
         }
     }  
+    
+    public float[] getTMAFastArr()
+    {
+        return fastTMAValues;
+    }
+    
+    public float[] getTMASlowArr()
+    {
+        return slowTMAValues;
+    }
 }

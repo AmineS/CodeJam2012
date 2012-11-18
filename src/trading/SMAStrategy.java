@@ -5,8 +5,8 @@ public class SMAStrategy extends AStrategy implements Runnable
     private int currentTick;
     private boolean fasterThenSlower;
     private Prices price;
-    public static float[] slowSMAValues;
-    public static float[] fastSMAValues;
+    private float[] slowSMAValues;
+    private float[] fastSMAValues;
     private final int FAST_N = 5;
     private final int SLOW_N = 20;
 
@@ -118,13 +118,13 @@ public class SMAStrategy extends AStrategy implements Runnable
         return currentTick;
     }
     
-    public static float[] getSlow()
-    {
-        return slowSMAValues;
-    }
-    
-    public static float[] getFast()
+    public float[] getTMAFastArr()
     {
         return fastSMAValues;
+    }
+    
+    public float[] getTMASlowArr()
+    {
+        return slowSMAValues;
     }
 }

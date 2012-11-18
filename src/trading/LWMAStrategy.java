@@ -3,8 +3,8 @@ package trading;
 
 public class LWMAStrategy extends AStrategy implements Runnable
 {
-	static final int SIZE = Prices.MAX_SECONDS;
-	private static int tick = 0;
+	private final int SIZE = Prices.MAX_SECONDS;
+	private int tick = 0;
 	private int i, limit;
 	private float[] slow, fast;
 	private float sumI, sumPrices;
@@ -59,20 +59,6 @@ public class LWMAStrategy extends AStrategy implements Runnable
 		}
 		return (float) (Math.round(sumPrices/sumI * 1000) / 1000.0);
     }
-    
-    /*
-    private float betterCompute(int n){
-		if (tick < n){
-			numerator = (slow[tick - 1] * denominator + prices.GetPrice(tick) * tick);
-			denominator += tick;
-		}
-		else {
-			numerator = (slow[tick - 1] * denominator - prices.GetPrice(tick - n - 1) * (tick - n - 1) + prices.GetPrice(tick) * tick);
-			denominator += n;
-		}
-		return numerator / denominator;
-    }
-    */
 
     @Override
     public int getTick()
@@ -97,6 +83,16 @@ public class LWMAStrategy extends AStrategy implements Runnable
      			write(tick, 'D', prices.GetPrice(tick));
      		}
     	}
+    }
+    
+    public float[] getLWMAFastArr()
+    {
+        return fast;
+    }
+    
+    public float[] getLWMASlowArr()
+    {
+        return slow;
     }
 
 }
