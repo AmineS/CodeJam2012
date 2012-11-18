@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import scheduling.Scheduler;
 
+import trading.AStrategy;
 import trading.EMAStrategy;
 import trading.LWMAStrategy;
 import trading.Prices;
@@ -30,6 +31,8 @@ public class TransactionCollector implements Runnable
     private FileWriter writerSMA, writerLWMA, writerEMA, writerTMA;
     private String SMAFileName = "SMA.txt", LWMAFileName = "LWMA.txt", EMAFileName = "EMA.txt",  TMAFileName = "TMA.txt";
     
+    private AStrategy as;
+    
     /** ArrayList of Transactions */
     ArrayList<Transaction> transactionList;
     
@@ -40,25 +43,66 @@ public class TransactionCollector implements Runnable
      * @param e
      * @param t
      */
-    public TransactionCollector(SMAStrategy s, LWMAStrategy l, EMAStrategy e, TMAStrategy t)
+    public TransactionCollector(AStrategy s)
     {
-        sma = s;
-        lwma = l;
-        ema = e;
-        tma = t;
+        as = s;
+        
+        if (as instanceof SMAStrategy)
+        {
+            sma = (SMAStrategy)as;
+        }
+
+        if (as instanceof LWMAStrategy)
+        {
+            lwma = (LWMAStrategy)as;
+        }
+
+        if (as instanceof EMAStrategy)
+        {
+            ema = (EMAStrategy)as;
+        }
+
+        if (as instanceof TMAStrategy)
+        {
+            tma = (TMAStrategy)as;
+        }
+        
         transactionList = new ArrayList<Transaction>();
         scheduler = new Scheduler();
         
         try
         {
-            writerSMA = new FileWriter(SMAFileName,true);
-            writerSMA.write("");
-            writerLWMA = new FileWriter(LWMAFileName,true);
-            writerLWMA.write("");
-            writerEMA = new FileWriter(EMAFileName,true);
-            writerEMA.write("");
-            writerTMA = new FileWriter(TMAFileName,true);
-            writerTMA.write("");
+            if (as instanceof SMAStrategy)
+            {
+                writerSMA = new FileWriter(SMAFileName);
+                writerSMA.write("");
+                writerSMA.close();
+                writerSMA = new FileWriter(SMAFileName, true);
+            }
+
+            if (as instanceof LWMAStrategy)
+            {
+                writerLWMA = new FileWriter(LWMAFileName);
+                writerLWMA.write("");
+                writerLWMA.close();
+                writerLWMA = new FileWriter(LWMAFileName, true);
+            }
+
+            if (as instanceof EMAStrategy)
+            {
+                writerEMA = new FileWriter(EMAFileName);
+                writerEMA.write("");
+                writerEMA.close();
+                writerEMA = new FileWriter(EMAFileName, true);
+            }
+
+            if (as instanceof TMAStrategy)
+            {
+                writerTMA = new FileWriter(TMAFileName);
+                writerTMA.write("");
+                writerTMA.close();
+                writerTMA = new FileWriter(TMAFileName, true);
+            }
         }
         catch(IOException ex)
         {
@@ -72,26 +116,26 @@ public class TransactionCollector implements Runnable
     {
         while(!doneCollecting)
         {
-            if (SMACurrentIndex < Prices.MAX_SECONDS)
+            if ((as instanceof SMAStrategy) && SMACurrentIndex < Prices.MAX_SECONDS)
             {
                 collectSMA();
             }
-            if (LWMACurrentIndex < Prices.MAX_SECONDS)
+            if ((as instanceof LWMAStrategy) && LWMACurrentIndex < Prices.MAX_SECONDS)
             {
                 collectLWMA();
             }
-            if (EMACurrentIndex < Prices.MAX_SECONDS)
+            if ((as instanceof EMAStrategy) && EMACurrentIndex < Prices.MAX_SECONDS)
             {
                 collectEMA();
             }
-            if (TMACurrentIndex < Prices.MAX_SECONDS)
+            if ((as instanceof TMAStrategy) && TMACurrentIndex < Prices.MAX_SECONDS)
             {
                 collectTMA();
             }
             
-            if (SMACurrentIndex == Prices.MAX_SECONDS  && 
-                    LWMACurrentIndex == Prices.MAX_SECONDS && 
-                        EMACurrentIndex == Prices.MAX_SECONDS && 
+            if (SMACurrentIndex == Prices.MAX_SECONDS  || 
+                    LWMACurrentIndex == Prices.MAX_SECONDS || 
+                        EMACurrentIndex == Prices.MAX_SECONDS || 
                             TMACurrentIndex == Prices.MAX_SECONDS)
             {
                 doneCollecting = true;
@@ -100,10 +144,14 @@ public class TransactionCollector implements Runnable
         
         try
         {
-            writerSMA.close();
-            writerTMA.close();
-            writerEMA.close();
-            writerLWMA.close();
+            if (as instanceof SMAStrategy)
+                writerSMA.close();
+            if (as instanceof TMAStrategy)
+                writerTMA.close();
+            if (as instanceof EMAStrategy)
+                writerEMA.close();
+            if (as instanceof LWMAStrategy)
+                writerLWMA.close();
         }
         catch(IOException ex)
         {
@@ -191,7 +239,6 @@ public class TransactionCollector implements Runnable
         if (lwma.getTypeAtTick(LWMACurrentIndex)=='N')
         {
             // this tick has not been taken care of yet, so do nothing.
-            return;
         }
         else if (lwma.getTypeAtTick(LWMACurrentIndex)=='D')
         {
@@ -206,8 +253,7 @@ public class TransactionCollector implements Runnable
                 System.out.println("Error while writing to file.");
             }
 
-            LWMACurrentIndex++;
-            return;
+            ++LWMACurrentIndex;
         }
         else if (lwma.getTypeAtTick(LWMACurrentIndex)=='B')
         {
@@ -223,8 +269,7 @@ public class TransactionCollector implements Runnable
                 System.out.println("Error while writing to file.");
             }
 
-            LWMACurrentIndex++;
-            return;
+            ++LWMACurrentIndex;
         }
         else if (lwma.getTypeAtTick(LWMACurrentIndex)=='S')
         {
@@ -240,8 +285,7 @@ public class TransactionCollector implements Runnable
                 System.out.println("Error while writing to file.");
             }
 
-            LWMACurrentIndex++;
-            return;
+            ++LWMACurrentIndex;
         }
     }
     
