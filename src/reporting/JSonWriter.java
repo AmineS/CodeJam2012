@@ -30,6 +30,24 @@ public class JSonWriter
         jsonObj.put("destination", email);
     }
 
+    private String transactionsJSONString()
+    {
+        StringBuilder transactionsString = new StringBuilder();
+        
+        transactionsString.append("[");
+        
+        for (Transaction t: transactionList)
+        {   
+            transactionsString.append(t.toJSON());
+            transactionsString.append(", ");
+        }
+        
+        // replace last comma with [ 
+        transactionsString.setCharAt(transactionsString.length() -1 , ']');
+        
+        return transactionsString.toString();
+    }
+    
     /**
      * Generate the JSON file
      */
@@ -37,14 +55,14 @@ public class JSonWriter
     {
         JSONObject tList = new JSONObject();
         String[] tString;
-        StringBuilder transaction = new StringBuilder();
+        StringBuilder transactionsString = new StringBuilder();
         JSONArray arr = new JSONArray();
-        transaction.append("[");
+        transactionsString.append("[");
         
         for (Transaction t: transactionList)
         {   
-            transaction.append(t.toJSON());
-            transaction.append(',');
+            transactionsString.append(t.toJSON());
+            transactionsString.append(", ");
             
             
 /*            tString = t.getTransactionAsStrArray(); 
@@ -54,7 +72,11 @@ public class JSonWriter
             }*/
         }
         
-        jsonObj.put("transactions", tList);
+        // replace last comma with [ 
+        transactionsString.setCharAt(transactionsString.length() -1 , ']');
+        
+        System.out.println(transactionsString.toString());
+        jsonObj.put("transactions", transactionsString.toString());
         
         try
         {
