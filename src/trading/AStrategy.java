@@ -5,6 +5,9 @@ public abstract class AStrategy implements IStrategy
     private char[] typeWriteArray = new char[Prices.MAX_SECONDS];
     private float[] priceWriteArray = new float[Prices.MAX_SECONDS];
  
+    private Object typeLock = new Object();
+    private Object priceLock = new Object();
+    
     public AStrategy()
     {
         for (int i=0;i<typeWriteArray.length;i++)
@@ -35,6 +38,13 @@ public abstract class AStrategy implements IStrategy
     {
         typeWriteArray[tick] = type;
         priceWriteArray[tick] = actualPrice;
+        
+        if(actualPrice < 0 ) typeWriteArray[tick] = 'D'; 
+        
+        synchronized(typeLock) 
+        {                
+            typeLock.notifyAll();
+        }        
     }
     
     /**
@@ -43,6 +53,21 @@ public abstract class AStrategy implements IStrategy
      */
     public char getTypeAtTick(int tt)
     {
+        while(typeWriteArray[tt]=='N')
+        {
+            try
+            {
+                synchronized(typeLock) 
+                {                
+                        typeLock.wait();             
+                } 
+            }
+            catch (Exception e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         return typeWriteArray[tt];
     }
     
@@ -52,6 +77,9 @@ public abstract class AStrategy implements IStrategy
      */
     public float getPriceAtTick(int tick)
     {
+        //forces the thread to lock if the price is wrong 
+        getTypeAtTick(tick);
+        
         return priceWriteArray[tick];
     }
 
