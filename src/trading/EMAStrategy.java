@@ -10,16 +10,14 @@ public class EMAStrategy extends AStrategy implements Runnable {
 	private int slowN = 20, fastN = 5;
 	private float[] slow;
 	private float[] fast;
-	private String id;
 	private Prices price;
 
 	public EMAStrategy(Prices prices) {
+	    super();
 		curTick = 0;
 		slow = init();
 		fast = init();
-		id = "EMA";
 		this.price = prices;
-
 	}
 
 	private float[] init() {
@@ -35,12 +33,13 @@ public class EMAStrategy extends AStrategy implements Runnable {
 		if (curTick == 0) {
 			slow[curTick] = price.GetPrice(curTick);
 			fast[curTick] = slow[curTick];
+			++curTick;
 			return;
 		}
 		slow[curTick] = compute(slowN);
 		fast[curTick] = compute(fastN);
 		detectCross();
-
+		++curTick;
 	}
 
 	private float compute(int N) {
@@ -48,38 +47,33 @@ public class EMAStrategy extends AStrategy implements Runnable {
 		float ema = (N == slowN) ? slow[curTick - 1] : fast[curTick - 1];
 		float pt = price.GetPrice(curTick);
 		float res = ema + alpha * (pt - ema);
-		return round(res);
+		return res;
 	}
 
 	@Override
 	public int getTick() {
 		return curTick;
 	}
-	
-	public static float round(float x) {
-		return ((float) Math.round(x * 1000) / 1000);
-	}
 		
-	private void detectCross(){
-		if(fast[curTick] > slow[curTick] && slow[curTick-1] > fast[curTick-1]){
-			// upward trend - report buy
-//            write(curTick, 'B', Trader.getTrader().trade('B'));
-			System.out.println("Time: "+curTick+" --  Buy");
-		}else if(fast[curTick] < slow[curTick] && slow[curTick-1] < fast[curTick-1]){
-			// downward trend - report sell
-//            write(curTick, 'S', Trader.getTrader().trade('S'));
-            System.out.println("Time: "+curTick+" --  Sell");
-		}else{
-			 // do nothing
-//            write(curTick,'D',price.GetPrice(curTick));
-            System.out.println("Time: "+curTick+" --  Nothing");
-		}
-	}
+    private void detectCross(){
+        if(fast[curTick] > slow[curTick] && slow[curTick-1] > fast[curTick-1]){
+            // upward trend - report buy
+            write(curTick, 'B', Trader.getTrader().trade('B'));
+            //System.out.println("EMA Buy");
+        }else if(fast[curTick] < slow[curTick] && slow[curTick-1] < fast[curTick-1]){
+            // downward trend - report sell
+            write(curTick, 'S', Trader.getTrader().trade('S'));
+            //System.out.println("EMA Sale");
+        }else{
+             // do nothing
+            write(curTick,'D',price.GetPrice(curTick));
+            //System.out.println("EMA D");
+        }
+    }
 
 	public void run() {
 		while (curTick != Prices.MAX_SECONDS) {
 			runStrategy();
-			++curTick;
 		}
 	}
 	

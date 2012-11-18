@@ -12,6 +12,7 @@ public class SMAStrategy extends AStrategy implements Runnable
 
     public SMAStrategy(Prices price)
     {
+        super();
         slowSMAValues = new float[Prices.MAX_SECONDS];
         fastSMAValues = new float[Prices.MAX_SECONDS];
         for (int i=0;i<Prices.MAX_SECONDS;i++)
@@ -84,16 +85,13 @@ public class SMAStrategy extends AStrategy implements Runnable
 	private void detectCross(){
 		if(fastSMAValues[currentTick] > slowSMAValues[currentTick] && slowSMAValues[currentTick-1] > fastSMAValues[currentTick-1]){
 			// upward trend - report buy
-//            write(curTick, 'B', Trader.getTrader().trade('B'));
-			System.out.println("Time: "+currentTick+" --  Buy");
+            write(currentTick, 'B', Trader.getTrader().trade('B'));
 		}else if(fastSMAValues[currentTick] < slowSMAValues[currentTick] && slowSMAValues[currentTick-1] < fastSMAValues[currentTick-1]){
 			// downward trend - report sell
-//            write(curTick, 'S', Trader.getTrader().trade('S'));
-            System.out.println("Time: "+currentTick+" --  Sell");
+            write(currentTick, 'S', Trader.getTrader().trade('S'));
 		}else{
 			 // do nothing
-//            write(curTick,'D',price.GetPrice(curTick));
-            System.out.println("Time: "+currentTick+" --  Nothing");
+            write(currentTick,'D',price.GetPrice(currentTick));
 		}
 	}
     

@@ -33,30 +33,32 @@ public class Main
         
         // launch Strategies
 
+        TMAStrategy tma = new TMAStrategy(prices);
+        EMAStrategy ema = new EMAStrategy(prices);
+        LWMAStrategy lwma = new LWMAStrategy(prices);
         SMAStrategy sma = new SMAStrategy(prices);
-        AStrategy tma = new TMAStrategy(prices);
-        AStrategy ema = new EMAStrategy(prices);
-        AStrategy lwma = new LWMAStrategy(prices);
         
          smaThread = new Thread(sma);
-//         tmaThread = new Thread((TMAStrategy)tma);
-//         emaThread = new Thread((EMAStrategy)ema);
-//         lwmaThread = new Thread((LWMAStrategy)lwma);
+         tmaThread = new Thread(tma);
+         emaThread = new Thread(ema);
+         lwmaThread = new Thread(lwma);
        
          smaThread.start();
-//         tmaThread.start(); 
-//         emaThread.start();
-//         lwmaThread.start();
-
+         lwmaThread.start();
+         emaThread.start();
+         
+         tmaThread.start(); 
         
-         TransactionCollector tc = new TransactionCollector(sma, (LWMAStrategy)lwma, (EMAStrategy)ema, (TMAStrategy)tma);
+         TransactionCollector tc = new TransactionCollector(sma, lwma, ema, tma);
          tcThread = new Thread(tc);
          tcThread.start();
+         
          // launch Dispatcher 
          dispatcherThread = new Thread(new Dispatcher(PricesPort));
          dispatcherThread.start();
  
         // launch JSON Writer
+         /*
          try
          {
              JSonWriter jsw = new JSonWriter(tc.getTransactionList(), "neerav789@gmail.com");
@@ -65,7 +67,7 @@ public class Main
          catch(JSONException ex)
          {
              ex.printStackTrace();
-         }
+         }*/
          
         // launch GUI 
         
@@ -74,10 +76,10 @@ public class Main
         try
         {
             dispatcherThread.join();
-//            lwmaThread.join();
-//            emaThread.join();
+            lwmaThread.join();
+            emaThread.join();
             smaThread.join();
-//            tmaThread.join();
+            tmaThread.join();
             tcThread.join();
         } catch (InterruptedException e)
         {

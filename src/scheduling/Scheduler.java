@@ -74,16 +74,7 @@ public class Scheduler {
 
 	public String getManager(int tick, int strategyIndex) {
 		int index = tick / halfHour;
-		return schedule.get(index).get(strategies[strategyIndex]);
-	}
-	
-	public static void main(String args[]){
-		 String[] managers = { "Manager1", "Manager2", "Manager3",
-			"Manager4", "Manager5", "Manager6", "Manager7" };
-		 Scheduler s = new Scheduler();
-		 for(String m: managers){
-			 System.out.println(printList(s.getManagerSchedule(m)));
-		 }
+		return schedule.get(index).get(strategies[strategyIndex-1]);
 	}
 	
 	public static String printList(List<Integer> l){

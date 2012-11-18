@@ -13,6 +13,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
 	String strategy;
 	
 	public LWMAStrategy(Prices prices) {
+	    super();
 		tick = 0;
 		slow = new float[SIZE];
 		fast = new float[SIZE];
@@ -36,10 +37,12 @@ public class LWMAStrategy extends AStrategy implements Runnable
     	slow[tick] = compute(5);
     	// to calculate LWMA20
     	fast[tick] = compute(20);
-    	/* DEBUG
-        System.out.println("The LWMA5 is " + slow[tick]);
-        System.out.println("The LWMA20 is " + fast[tick]);
-        */
+    	
+    	if (tick < 1)
+    	{
+    	    System.out.println("The LWMA5 is " + slow[tick]);
+            System.out.println("The LWMA20 is " + fast[tick]);
+    	}
     }
 	
     private float compute(int n){
@@ -57,7 +60,7 @@ public class LWMAStrategy extends AStrategy implements Runnable
 			// but to comply with the arrays, the index starts at 0
 			sumPrices += prices.GetPrice(tick - limit + i + 1) * (i + 1);
 		}
-		return (float) (Math.round(sumPrices/sumI * 1000) / 1000.0);
+		return sumPrices = (float) (Math.round(sumPrices/sumI * 1000) / 1000.0);
     }
 
     @Override
