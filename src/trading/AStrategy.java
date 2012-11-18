@@ -38,6 +38,9 @@ public abstract class AStrategy implements IStrategy
     {
         typeWriteArray[tick] = type;
         priceWriteArray[tick] = actualPrice;
+        
+        if(actualPrice < 0 ) typeWriteArray[tick] = 'D'; 
+        
         synchronized(typeLock) 
         {                
             typeLock.notifyAll();
@@ -50,14 +53,13 @@ public abstract class AStrategy implements IStrategy
      */
     public char getTypeAtTick(int tt)
     {
-        while(typeWriteArray[tick]=='N')
+        while(typeWriteArray[tt]=='N')
         {
             try
             {
                 synchronized(typeLock) 
                 {                
-                        typeLock.wait();
-             
+                        typeLock.wait();             
                 } 
             }
             catch (Exception e)
@@ -66,7 +68,7 @@ public abstract class AStrategy implements IStrategy
                 e.printStackTrace();
             }
         }
-        return typeWriteArray[tick];
+        return typeWriteArray[tt];
     }
     
     /**

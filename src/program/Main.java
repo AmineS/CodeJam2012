@@ -3,6 +3,7 @@ package program;
 import org.json.JSONException;
 
 import reporting.JSonWriter;
+import reporting.Transaction;
 import reporting.TransactionCollector;
 import trading.*;
 
@@ -70,12 +71,12 @@ public class Main
             e.printStackTrace();
         }
 
-        /*
-        for (int i=0;i<32400;i++)
+        
+        for (Transaction t : tc.getTransactionList())
         {
-            System.out.println(tc.getTransactionList().get(i).getTransactionAsStrArray()[0]);
+            System.out.println(t.getTransactionAsStrArray()[2]);
         }
-        */
+        
         
         // launch JSON Writer
          try
