@@ -69,26 +69,6 @@ public class TMAStrategy extends AStrategy implements Runnable
         computeSlowTMA(currentTick, N_SLOW);
         computeFastTMA(currentTick, N_FAST);
 
-        /*
-        if(currentTick > 1)
-        {
-            boolean currentFasterThenSlower = fastSMAValues[currentTick] > slowSMAValues[currentTick];
-            if(currentFasterThenSlower != fasterThenSlower)
-            {
-                crossover(fasterThenSlower);
-                fasterThenSlower = currentFasterThenSlower;
-            }
-            else
-            {
-                // do nothing
-                write(currentTick,'D',prices.GetPrice(currentTick));
-            }
-        }
-        else
-        {
-            fasterThenSlower = fastSMAValues[currentTick] > slowSMAValues[currentTick];
-        }*/
-        
         detectCross();
         
     }

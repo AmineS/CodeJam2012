@@ -18,7 +18,7 @@ public class LWMAStrategy extends AStrategy implements Runnable {
 		strategy = "LWMA";
 		this.prices = prices;
 	}
-
+	
 	public void run() {
 		while (tick < 32400) {
 			runStrategy();
@@ -26,6 +26,7 @@ public class LWMAStrategy extends AStrategy implements Runnable {
 			// increment tick
 			tick++;
 		}
+
 	}
 
 	@Override
@@ -58,38 +59,46 @@ public class LWMAStrategy extends AStrategy implements Runnable {
 		return sumPrices = (float) (Math.round(sumPrices / sumI * 1000) / 1000.0);
 	}
 
-	@Override
-	public int getTick() {
-		return tick;
-	}
 
-	@Override
-	public void crossover(boolean _) {
-		if (tick > 0) {
-			if ((slow[tick - 1] > fast[tick - 1]) && (slow[tick] < fast[tick])) {
-				// buy
-				write(tick, 'B', Trader.getTrader().trade('B'));
-//				 System.out.println("Time: "+tick+" --  Buy");
-			} else if ((slow[tick - 1] < fast[tick - 1])
-					&& (slow[tick] > fast[tick])) {
-				// sell
-				write(tick, 'S', Trader.getTrader().trade('S'));
-//				System.out.println("Time: "+tick+" --  Sell");
-			} else {
-				// do nothing
-				write(tick, 'D', prices.GetPrice(tick));
-//				System.out.println("Time: "+tick+" --  Nothing");
-			}
-		}
-	}
+    @Override
+    public int getTick()
+    {
+        return tick;
+    }
+    
+    @Override
+    public void crossover(boolean _)
+    {
+    	if (tick > 0){
+    		if ((slow[tick - 1] > fast[tick - 1]) && (slow[tick] < fast[tick])){
+     			// buy
+     	    	write(tick, 'B', Trader.getTrader().trade('B'));
+     		}
+     		else if ((slow[tick - 1] < fast[tick - 1]) && (slow[tick] > fast[tick])){
+     			// sell
+     	    	write(tick, 'S', Trader.getTrader().trade('S'));
+     		}
+     		else {
+     			// do nothing
+     			write(tick, 'D', prices.GetPrice(tick));
+     		}
+    	}
+    	else
+    	{
+    		write(tick, 'D', prices.GetPrice(tick));
+    	}
+    }
+    
+    public float getLWMAFastValue(int t)
+    {
+        return fast[t];
+    }
+    
+    public float getLWMASlowValue(int t)
+    {
+        return slow[t];
+    }
 
-	public float getLWMAFastValue(int t) {
-		return fast[t];
-	}
-
-	public float getLWMASlowValue(int t) {
-		return slow[t];
-	}
 
 /*	public void test() {
 		double[] ps = { 61.590, 61.440, 61.320, 61.670, 61.920, 62.610, 62.880,

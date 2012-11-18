@@ -41,9 +41,9 @@ public abstract class AStrategy implements IStrategy
      * Get the array of transaction types
      * @return
      */
-    public char getTypeAtTick(int tick)
+    public char getTypeAtTick(int tt)
     {
-        return typeWriteArray[tick];
+        return typeWriteArray[tt];
     }
     
     /**
@@ -64,5 +64,9 @@ public abstract class AStrategy implements IStrategy
     public static float round(float x) {
         return ((float) Math.round(x * 1000) / 1000);
     }
-
+    
+    public char[] getTypeArr()
+    {
+        return typeWriteArray;
+    }
 }

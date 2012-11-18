@@ -33,16 +33,15 @@ public class Main
         
         // launch Strategies
 
-
-        TMAStrategy tma = new TMAStrategy(prices);
+        SMAStrategy sma = new SMAStrategy(prices);
         EMAStrategy ema = new EMAStrategy(prices);
         LWMAStrategy lwma = new LWMAStrategy(prices);
-        SMAStrategy sma = new SMAStrategy(prices);
+        TMAStrategy tma = new TMAStrategy(prices);
         
          smaThread = new Thread(sma);
-         tmaThread = new Thread(tma);
          emaThread = new Thread(ema);
          lwmaThread = new Thread(lwma);
+         tmaThread = new Thread(tma);
        
          smaThread.start();
          lwmaThread.start();
@@ -56,7 +55,48 @@ public class Main
          // launch Dispatcher 
          dispatcherThread = new Thread(new Dispatcher(PricesPort));
          dispatcherThread.start();
- 
+         
+        try
+        {
+            smaThread.join();
+            tmaThread.join();
+            emaThread.join();
+            lwmaThread.join();
+            tcThread.join();
+            dispatcherThread.join();
+        } catch (InterruptedException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+         
+         
+         int buys=0,sells=0,d=0;
+         char[] arr = ema.getTypeArr();
+         for(int i=0; i<arr.length; i++)
+         {
+             if (arr[i]=='N')
+             {
+                 System.out.println("Error");
+                 System.exit(-1);
+             }
+             
+             if(arr[i]=='B')
+             {
+                 buys++;
+             }
+             else if(arr[i]=='S')
+             {
+                 sells++;
+             }
+             else if(arr[i]=='D')
+             {
+                 d++;
+             }
+         }
+         System.out.println("Buys:" + buys + "\nSells:" + sells + "\ndonothings:" + d);
+         
+         
         // launch JSON Writer
          /*
          try
@@ -72,34 +112,9 @@ public class Main
         // launch GUI 
         
         // launch Exchange Server 
-        
-        // launch Dispatcher 
-        Dispatcher dispatcher = new Dispatcher(PricesPort);
-/*        
-        dispatcher.addThread(smaThread);
-        dispatcher.addThread(tmaThread);
-        dispatcher.addThread(emaThread);
-        dispatcher.addThread(lwmaThread);*/
-        
-        dispatcherThread = new Thread(dispatcher);
-        dispatcherThread.start();
-
-        try
-        {
-            dispatcherThread.join();
-            lwmaThread.join();
-            emaThread.join();
-            smaThread.join();
-            tmaThread.join();
-            tcThread.join();
-        } catch (InterruptedException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
-        Trader.closeTraderConnection();
         System.out.println("Woa");
+        
+
         
         
         /*** TO DELETE
