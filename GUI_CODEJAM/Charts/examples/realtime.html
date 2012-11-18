@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Real Time Moving Strategies</title>
+    <link href="layout.css" rel="stylesheet" type="text/css">
+    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="../jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="../jquery.flot.js"></script>
+ </head>
+    <body>
+    <h1>Real Time Moving Strategies</h1>
+
+    <h4>SMA</h4>
+    <div id="placeholder" style="width:600px; height:300px;"></div>
+    <br/>
+    <h4>LWMA</h4>
+    <div id="placeholder2" style="width:600px; height:300px;"></div>
+    <br/>
+    <h4>EMA</h4>
+    <div id="placeholder3" style="width:600px; height:300px;"></div>
+    <br/>
+    <h4>TMA</h4>
+    <div id="placeholder4" style="width:600px; height:300px;"></div>
+
+    <p>Time between updates: <input id="updateInterval" type="text" value="" style="text-align: right; width:5em"> milliseconds</p>
+
+<script type="text/javascript">
+$(function () {
+
+    var slowSMAData = [];
+    var fastSMAData = [];
+
+    var slowLWMAData = [];
+    var fastLWMAData = [];
+
+    var slowEMAData = [];
+    var fastEMAData = [];
+
+    var slowTMAData = [];
+    var fastTMAData = [];
+
+    var data = [];
+
+    var totalPoints = 100;
+
+    function getData1() {
+        if (data.length > 0)
+            data = data.slice(1);
+        // do a random walk
+        while (data.length < totalPoints) {
+            var prev = data.length > 0 ? data[data.length - 1] : 50;
+            var y = prev + Math.random() * 10 - 5;
+            if (y < 0)
+                y = 0;
+            if (y > 100)
+                y = 100;
+            data.push(y);
+        }
+
+        // zip the generated y values with the x values
+        var res = [];
+        for (var i = 0; i < data.length; ++i)
+            res.push([i, data[i]])
+        return res;
+    }
+
+    function pollSMAData()
+    {
+        $.get('ajax/testSMA.html', function(data)
+         {
+          alert('Load was performed.');
+        });
+        plot.setData([ getData1(), getData1() ]);
+        plot.draw();
+        // make Ajax call here, inside the callback call:
+        setTimeout(pollSMAData, updateInterval);
+        // ...
+    }
+
+    function pollLWMAData()
+    {
+        $.get('ajax/testLWMA.html', function(data)
+         {
+          alert('Load was performed.');
+        });
+        plot2.setData([ getData1(), getData1() ]);
+        plot2.draw();
+        // make Ajax call here, inside the callback call:
+        setTimeout(pollLWMAData, updateInterval);
+        // ...
+    }
+
+    function pollEMAData()
+    {
+        $.get('ajax/testEMA.html', function(data)
+         {
+          alert('Load was performed.');
+        });
+        plot3.setData([ getData1(), getData1() ]);
+        plot3.draw();
+        // make Ajax call here, inside the callback call:
+        setTimeout(pollEMAData, updateInterval);
+        // ...
+    }
+
+    function pollTMAData()
+    {
+        $.get('ajax/testTMA.html', function(data)
+         {
+          alert('Load was performed.');
+        });
+        plot4.setData([ getData1(), getData1() ]);
+        plot4.draw();
+        // make Ajax call here, inside the callback call:
+        setTimeout(pollTMAData, updateInterval);
+        // ...
+    }
+
+
+    // setup control widget
+    var updateInterval = 1000;
+    $("#updateInterval").val(updateInterval).change(function () {
+        var v = $(this).val();
+        if (v && !isNaN(+v)) {
+            updateInterval = +v;
+            if (updateInterval < 1)
+                updateInterval = 1;
+            if (updateInterval > 2000)
+                updateInterval = 2000;
+            $(this).val("" + updateInterval);
+        }
+    });
+
+    // setup plot
+    var options = {
+        series: { shadowSize: 0 }, // drawing is faster without shadows
+        yaxis: { min: 0, max: 100 },
+    };
+
+    var plot = $.plot($("#placeholder"), [ getData1() ], options);
+    var plot2 = $.plot($("#placeholder2"), [ getData1() ], options);
+    var plot3 = $.plot($("#placeholder3"), [ getData1() ], options);
+    var plot4 = $.plot($("#placeholder4"), [ getData1() ], options);
+
+    pollSMAData();
+    pollLWMAData();
+    pollEMAData();
+    pollTMAData();
+
+});
+</script>
+
+ </body>
+</html>

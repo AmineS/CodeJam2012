@@ -35,6 +35,7 @@ public class EMAStrategy extends AStrategy implements Runnable {
 		if (curTick == 0) {
 			slow[curTick] = price.GetPrice(curTick);
 			fast[curTick] = slow[curTick];
+			write(curTick, 'D', price.GetPrice(curTick));
 			return;
 		}
 		slow[curTick] = compute(slowN);
@@ -64,15 +65,12 @@ public class EMAStrategy extends AStrategy implements Runnable {
 		if(fast[curTick] > slow[curTick] && slow[curTick-1] > fast[curTick-1]){
 			// upward trend - report buy
             write(curTick, 'B', Trader.getTrader().trade('B'));
-//			System.out.println("Time: "+curTick+" --  Buy");
 		}else if(fast[curTick] < slow[curTick] && slow[curTick-1] < fast[curTick-1]){
 			// downward trend - report sell
             write(curTick, 'S', Trader.getTrader().trade('S'));
-//            System.out.println("Time: "+curTick+" --  Sell");
 		}else{
 			 // do nothing
             write(curTick,'D',price.GetPrice(curTick));
-//            System.out.println("Time: "+curTick+" --  Nothing");
 		}
 	}
 

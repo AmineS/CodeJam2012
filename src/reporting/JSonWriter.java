@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,19 +35,17 @@ public class JSonWriter
      */
     public void generateOutput() throws JSONException
     {
-        JSONObject tList;
+        JSONObject tList = new JSONObject();
         String[] tString;
-        tList = new JSONObject();
+        JSONArray arr = new JSONArray();
         
         for (Transaction t: transactionList)
         {   
-            
             tString = t.getTransactionAsStrArray(); 
             for (int i=0;i<tString.length;i++)
             {
-                tList.put(labels[i], tString[i]);
+                //arr.put(labels[i], tString[i]);
             }
-            tList.put("name","s");
         }
         
         jsonObj.put("transactions", tList);
