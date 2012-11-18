@@ -17,13 +17,15 @@ public class JSonWriter
     private ArrayList<Transaction> transactionList = null;
     private JSONObject jsonObj;
     private String[] labels = {"time", "type", "price", "manager", "strategy"};
+    private String email;
     
     /**
      * Constructor
      * @param tl - a transaction list and the destination email
      */
-    public JSonWriter(ArrayList<Transaction> tl, String email) throws JSONException
+    public JSonWriter(ArrayList<Transaction> tl, String em) throws JSONException
     {
+        email = em;
         transactionList = tl;
         jsonObj = new JSONObject();
         jsonObj.put("team","Team007");
@@ -53,35 +55,16 @@ public class JSonWriter
      */
     public void generateOutput() throws JSONException
     {
-        JSONObject tList = new JSONObject();
-        String[] tString;
-        StringBuilder transactionsString = new StringBuilder();
-        JSONArray arr = new JSONArray();
-        transactionsString.append("[");
-        
-        for (Transaction t: transactionList)
-        {   
-            transactionsString.append(t.toJSON());
-            transactionsString.append(", ");
-            
-            
-/*            tString = t.getTransactionAsStrArray(); 
-            for (int i=0;i<tString.length;i++)
-            {
-                //arr.put(labels[i], tString[i]);
-            }*/
-        }
-        
-        // replace last comma with [ 
-        transactionsString.setCharAt(transactionsString.length() -1 , ']');
-        
-        System.out.println(transactionsString.toString());
-        jsonObj.put("transactions", transactionsString.toString());
+        String transactions = transactionsJSONString();
+        String newString = "{";
+        newString += "\"team\": \"Team007\",";
+        newString += "\"destination\": \"" + email + "\",";
+        newString += "\"transactions\": " + transactions + "}";
         
         try
         {
             FileWriter file = new FileWriter("codejam.json");
-            file.write(jsonObj.toString());
+            file.write(newString);
             file.flush();
             file.close();
         } 
