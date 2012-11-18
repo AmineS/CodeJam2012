@@ -19,6 +19,8 @@ public class JSonWriter
     private String[] labels = {"time", "type", "price", "manager", "strategy"};
     private String email;
     
+    private String JSONOutputString = "";
+    
     /**
      * Constructor
      * @param tl - a transaction list and the destination email
@@ -50,17 +52,42 @@ public class JSonWriter
         return transactionsString.toString();
     }
     
+    private String transactionsJSONString(StringBuilder transactionsString)
+    {        
+        transactionsString.append("[");
+        
+        for (Transaction t: transactionList)
+        {   
+            transactionsString.append(t.toJSON());
+            transactionsString.append(", ");
+        }
+        
+        // replace last comma with [ 
+        transactionsString.setCharAt(transactionsString.length() -1 , ']');
+        
+        return transactionsString.toString();
+    }
+    
     /**
      * Generate the JSON file
      */
     public void generateOutput() throws JSONException
     {
+    	/*
+    	StringBuilder jsonOutput = new StringBuilder();
+    	jsonOutput.append("{");
+    	jsonOutput.append("\"team\": \"Team007\",");
+    	jsonOutput.append("\"destination\": \"" + email + "\",");
+    	jsonOutput.append("\"transactions\": ");
+    	transactionsJSONString(jsonOutput);
+    	jsonOutput.append("}");*/
+    	
         String transactions = transactionsJSONString();
         String newString = "{";
         newString += "\"team\": \"Team007\",";
         newString += "\"destination\": \"" + email + "\",";
         newString += "\"transactions\": " + transactions + "}";
-        
+        JSONOutputString = newString;
         try
         {
             FileWriter file = new FileWriter("codejam.json");
@@ -72,5 +99,10 @@ public class JSonWriter
         {
             System.out.println("Error while writing JSON output to file codejam.json");
         }
+    }
+    
+    public String getOutputString()
+    {
+    	return JSONOutputString;
     }
 }

@@ -2,6 +2,7 @@ package program;
 
 import org.json.JSONException;
 
+import reporting.ESignLive;
 import reporting.JSonWriter;
 import reporting.Transaction;
 import reporting.TransactionCollector;
@@ -83,6 +84,7 @@ public class Main
          {
              JSonWriter jsw = new JSonWriter(tc.getTransactionList(), "neerav789@gmail.com");
              jsw.generateOutput();
+             System.out.println("The output ceremony ID is " + ESignLive.SignDocument(jsw.getOutputString()));
          }
          catch(JSONException ex)
          {
