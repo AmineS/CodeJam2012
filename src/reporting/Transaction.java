@@ -27,7 +27,7 @@ public class Transaction implements Comparable<Transaction>
         type = ty;
         price = p;
         manager = m;
-        strategy = 4;
+        strategy = s;
     }
     
     @Override
