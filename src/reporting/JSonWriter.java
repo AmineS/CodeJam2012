@@ -23,11 +23,13 @@ public class JSonWriter
     {
         email = em;
         transactionList = tl;
+        System.out.println(tl.get(0).toJSON());
     }
 
     /**
      * Makes a string from all transactions
      * @return transactions as a string in JSON format
+     * @throws InterruptedException 
      */
     private String transactionsJSONString()
     {
@@ -47,38 +49,18 @@ public class JSonWriter
         return transactionsString.toString();
     }
     
-    private String transactionsJSONString(StringBuilder transactionsString)
-    {        
-        transactionsString.append("[");
-        Transaction t = transactionList.get(0);
-        /*
-        for (Transaction t: transactionList)
-        {   
-            transactionsString.append(t.toJSON());
-            transactionsString.append(", ");
-        }*/
-        
-        transactionsString.append(t.toJSON());
-        transactionsString.append(", ");
-        
-        // replace last comma with [ 
-        transactionsString.setCharAt(transactionsString.length() -1 , ']');
-        
-        return transactionsString.toString();
-    }
-    
     /**
      * Generate the JSON file
      */
     public void generateOutput()
     {
 	
-        String transactions = transactionsJSONString(new StringBuilder());
+        String transactions = transactionsJSONString();
         String newString = "{";
         newString += "\"team\": \"Team007\",";
         newString += "\"destination\": \"" + email + "\",";
         newString += "\"transactions\": " + transactions + "}";
-        JSONOutputString = newString;
+        //JSONOutputString = newString;
         
         try
         {
