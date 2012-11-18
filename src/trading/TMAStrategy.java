@@ -91,7 +91,7 @@ public class TMAStrategy extends AStrategy implements Runnable
             {
                 for (int k=0; k<=t; k++)
                 {
-                    slowTMAValues[t] += slowSMAValues[t];
+                    slowTMAValues[t] += slowSMAValues[k];
                 }
             }
             slowTMAValues[t] /= t+1;
