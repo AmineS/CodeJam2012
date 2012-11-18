@@ -4,10 +4,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * The JSonWriter
  * @author dbhage
@@ -15,23 +11,22 @@ import org.json.JSONObject;
 public class JSonWriter
 {
     private ArrayList<Transaction> transactionList = null;
-    private JSONObject jsonObj;
-    private String[] labels = {"time", "type", "price", "manager", "strategy"};
     private String email;
     
     /**
      * Constructor
      * @param tl - a transaction list and the destination email
      */
-    public JSonWriter(ArrayList<Transaction> tl, String em) throws JSONException
+    public JSonWriter(ArrayList<Transaction> tl, String em)
     {
         email = em;
         transactionList = tl;
-        jsonObj = new JSONObject();
-        jsonObj.put("team","Team007");
-        jsonObj.put("destination", email);
     }
 
+    /**
+     * Makes a string from all transactions
+     * @return transactions as a string in JSON format
+     */
     private String transactionsJSONString()
     {
         StringBuilder transactionsString = new StringBuilder();
@@ -53,7 +48,7 @@ public class JSonWriter
     /**
      * Generate the JSON file
      */
-    public void generateOutput() throws JSONException
+    public void generateOutput()
     {
         String transactions = transactionsJSONString();
         String newString = "{";

@@ -2,7 +2,7 @@ package reporting;
 
 import java.io.*;
 
-
+/*
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.*;
@@ -10,7 +10,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.*;
 import org.apache.http.entity.*;
 import org.apache.http.entity.ByteArrayEntity;
-
+*/
 public class ESignLive
 {
     private static String apiKey; 
@@ -18,7 +18,7 @@ public class ESignLive
     // default url 
     private static final String url = "https://stage-api.e-signlive.com/aws/rest/services/codejam";   
     
-    public static void main(String[] args){
+    /*public static void main(String[] args){
     	System.out.println(SignDocument("{" +
         		"\"team\" : \"Flying monkeys\"," +
         		"\"destination\" : \"mcgillcodejam2012@gmail.com\"," +
@@ -30,7 +30,7 @@ public class ESignLive
         		"\"manager\" : \"Manager1\"," +
         		"\"strategy\" : \"EMA\"" +
         		"}]}\""));
-    }
+    }*/
     
     public ESignLive(String apiKey_)
     {
@@ -47,7 +47,7 @@ public class ESignLive
     
     public static String SignDocument(String document)
     {
-    	String ceremonyID = "{}"; 
+    	String ceremonyID = "{}"; /*
         HttpClient httpClient = new DefaultHttpClient();
         httpClient.getParams().setParameter("http.protocol.version", HttpVersion.HTTP_1_0);
         
@@ -70,7 +70,7 @@ public class ESignLive
             BufferedReader reader = new BufferedReader(
                             new InputStreamReader((response.getEntity().getContent())));
      
-            /** Debugging*/
+            // Debugging
             String output;
             ceremonyID = "";
             while ((output = reader.readLine()) != null) 
@@ -91,7 +91,7 @@ public class ESignLive
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }        
+        }        */
         return ceremonyID;
     }
 }
