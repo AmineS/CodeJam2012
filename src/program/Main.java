@@ -32,7 +32,13 @@ public class Main
         Trader.setTraderConnection(TradingPort);
         
         // launch Strategies
+
         SMAStrategy sma = new SMAStrategy(prices);
+
+
+
+
+
         EMAStrategy ema = new EMAStrategy(prices);
         LWMAStrategy lwma = new LWMAStrategy(prices);
         TMAStrategy tma = new TMAStrategy(prices);
@@ -45,7 +51,6 @@ public class Main
          smaThread.start();
          lwmaThread.start();
          emaThread.start();
-         
          tmaThread.start(); 
         
          TransactionCollector tcSMA,tcEMA, tcLWMA, tcTMA;
@@ -128,7 +133,6 @@ public class Main
         // launch GUI 
         
         // launch Exchange Server 
-         
         System.out.println("Woa");
         
 
