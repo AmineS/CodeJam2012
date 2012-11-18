@@ -69,4 +69,60 @@ public class Transaction implements Comparable<Transaction>
         transactionAsStr[4] = this.strategy + "";
         return transactionAsStr;
     }
+    
+    public String toJSON()
+    {
+        StringBuffer jsonString = new StringBuffer();
+        
+        jsonString.append("{\"time\": \"");
+        jsonString.append(this.time);
+        jsonString.append("\", ");
+        
+        jsonString.append("\"type\": \"");
+        jsonString.append(this.getType());
+        jsonString.append("\", ");
+        
+        jsonString.append("\"price\": ");
+        jsonString.append(this.price);
+        jsonString.append(", ");
+        
+        jsonString.append("\"manager\": \"");
+        jsonString.append(this.manager);
+        jsonString.append("\", ");
+        
+        jsonString.append("\"price\": \"");
+        jsonString.append(this.getStrategy());        
+        jsonString.append("\"} ");   
+        
+        return jsonString.toString();
+    }
+    
+    private String getStrategy()
+    {
+        switch(strategy)
+        {
+            case 1:
+                return "SMA";
+            case 2: 
+                return "LWMA";
+            case 3:
+                return "EMA"; 
+            case 4: 
+                return "TMA"; 
+            default: 
+                return "";
+        }
+    }
+    
+    private String getType()
+    {
+        if(type == 'B')
+        {
+            return "Buy";
+        }
+        else
+        {
+            return "Sell";
+        }
+    }
 }
