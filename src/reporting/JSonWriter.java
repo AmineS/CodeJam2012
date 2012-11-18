@@ -23,7 +23,6 @@ public class JSonWriter
     {
         email = em;
         transactionList = tl;
-        System.out.println(tl.get(0).toJSON());
     }
 
     /**
